@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { fieldErrorsOf, newPasswordSchema, signInSchema, signUpSchema } from "./validation";
+import {
+  changePasswordSchema,
+  deleteAccountSchema,
+  fieldErrorsOf,
+  newPasswordSchema,
+  signInSchema,
+  signUpSchema,
+} from "./validation";
 
 function errorsFor(result: ReturnType<typeof signUpSchema.safeParse>) {
   return result.success ? {} : fieldErrorsOf(result.error);
@@ -56,6 +63,40 @@ describe("newPasswordSchema", () => {
 
     expect(result.success ? {} : fieldErrorsOf(result.error)).toEqual({
       passwordConfirmation: ["Die Passwörter stimmen nicht überein."],
+    });
+  });
+});
+
+describe("changePasswordSchema", () => {
+  it("requires the current password and a valid, confirmed new password", () => {
+    const result = changePasswordSchema.safeParse({
+      currentPassword: "",
+      password: "kurz",
+      passwordConfirmation: "anders",
+    });
+    const errors = result.success ? {} : fieldErrorsOf(result.error);
+
+    expect(errors.currentPassword).toEqual(["Bitte gib dein aktuelles Passwort ein."]);
+    expect(errors.password?.join(" ")).toContain("mindestens 8 Zeichen");
+  });
+
+  it("accepts a valid change", () => {
+    expect(
+      changePasswordSchema.safeParse({
+        currentPassword: "alt",
+        password: "neuesPasswort1",
+        passwordConfirmation: "neuesPasswort1",
+      }).success,
+    ).toBe(true);
+  });
+});
+
+describe("deleteAccountSchema", () => {
+  it("requires the current password", () => {
+    const result = deleteAccountSchema.safeParse({ currentPassword: "" });
+
+    expect(result.success ? {} : fieldErrorsOf(result.error)).toEqual({
+      currentPassword: ["Bitte gib dein aktuelles Passwort ein."],
     });
   });
 });

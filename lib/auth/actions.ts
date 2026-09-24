@@ -4,11 +4,13 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
-import { getCurrentUser } from "./dal";
+import { getCurrentUser, requireUser } from "./dal";
 import { authErrorMessage } from "./errors";
 import type { AuthFormState } from "./form-state";
 import { AFTER_LOGIN_PATH, safeNextPath } from "./paths";
 import {
+  changePasswordSchema,
+  deleteAccountSchema,
   fieldErrorsOf,
   newPasswordSchema,
   passwordResetRequestSchema,
@@ -124,4 +126,57 @@ export async function updatePassword(_: AuthFormState, formData: FormData): Prom
   if (error) return { status: "error", message: authErrorMessage(error.code) };
 
   redirect(AFTER_LOGIN_PATH);
+}
+
+const WRONG_CURRENT_PASSWORD = { currentPassword: ["Das aktuelle Passwort ist falsch."] };
+
+/** Checks the current password by signing in again. */
+async function isCurrentPassword(email: string | undefined, password: string) {
+  if (!email) return false;
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  return !error;
+}
+
+export async function changePassword(_: AuthFormState, formData: FormData): Promise<AuthFormState> {
+  const user = await requireUser("/profil");
+
+  const parsed = changePasswordSchema.safeParse({
+    currentPassword: field(formData, "currentPassword"),
+    password: field(formData, "password"),
+    passwordConfirmation: field(formData, "passwordConfirmation"),
+  });
+  if (!parsed.success) return { status: "error", fieldErrors: fieldErrorsOf(parsed.error) };
+
+  if (!(await isCurrentPassword(user.email, parsed.data.currentPassword))) {
+    return { status: "error", fieldErrors: WRONG_CURRENT_PASSWORD };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+  if (error) return { status: "error", message: authErrorMessage(error.code) };
+
+  return { status: "success", message: "Dein Passwort wurde geändert." };
+}
+
+export async function deleteAccount(_: AuthFormState, formData: FormData): Promise<AuthFormState> {
+  const user = await requireUser("/profil");
+
+  const parsed = deleteAccountSchema.safeParse({
+    currentPassword: field(formData, "currentPassword"),
+  });
+  if (!parsed.success) return { status: "error", fieldErrors: fieldErrorsOf(parsed.error) };
+
+  if (!(await isCurrentPassword(user.email, parsed.data.currentPassword))) {
+    return { status: "error", fieldErrors: WRONG_CURRENT_PASSWORD };
+  }
+
+  const supabase = await createClient();
+  // Deletes the auth user; the database deletes all their data with it.
+  const { error } = await supabase.rpc("delete_own_account");
+  if (error) return { status: "error", message: authErrorMessage(undefined) };
+
+  // The user no longer exists, so only clear the session cookies locally.
+  await supabase.auth.signOut({ scope: "local" });
+  redirect("/konto-geloescht");
 }

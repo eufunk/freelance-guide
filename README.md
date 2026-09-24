@@ -41,14 +41,15 @@ apt-get install -y docker.io && systemctl enable --now docker
 
 Daily use (from Windows, in the project folder):
 
-| Script              | Purpose                                                   |
-| ------------------- | --------------------------------------------------------- |
-| `npm run db:start`  | Start Supabase and keep WSL awake until `db:stop`         |
-| `npm run db:stop`   | Stop Supabase (data is kept) and let WSL shut down again  |
-| `npm run db:status` | Show URLs and keys                                        |
-| `npm run db:reset`  | Recreate the database from the migrations (deletes data!) |
-| `npm run db:test`   | Database tests (pgTAP, `supabase/tests/`)                 |
-| `npm run db:types`  | Regenerate `lib/db/database.types.ts` after a migration   |
+| Script               | Purpose                                                   |
+| -------------------- | --------------------------------------------------------- |
+| `npm run db:start`   | Start Supabase and keep WSL awake until `db:stop`         |
+| `npm run db:stop`    | Stop Supabase (data is kept) and let WSL shut down again  |
+| `npm run db:status`  | Show URLs and keys                                        |
+| `npm run db:migrate` | Apply new migrations, keeping existing data               |
+| `npm run db:reset`   | Recreate the database from the migrations (deletes data!) |
+| `npm run db:test`    | Database tests (pgTAP, `supabase/tests/`)                 |
+| `npm run db:types`   | Regenerate `lib/db/database.types.ts` after a migration   |
 
 | Service           | URL                    |
 | ----------------- | ---------------------- |
@@ -68,7 +69,7 @@ Realtime, Storage, Edge Functions and Analytics are disabled in
 [supabase/config.toml](supabase/config.toml) because the MVP doesn't use them.
 
 Migrations live in [supabase/migrations/](supabase/migrations/). Create one with
-`wsl -d Ubuntu -- supabase migration new <name>`, apply it with `npm run db:reset`, then run
+`wsl -d Ubuntu -- supabase migration new <name>`, apply it with `npm run db:migrate`, then run
 `npm run db:types` and `npm run db:test`.
 
 ### Authentication
@@ -164,6 +165,14 @@ through [lib/content/index.ts](lib/content/index.ts).
 - Open a pull request against `main`. CI runs lint, formatting, type check, unit tests, build and
   E2E tests ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 - Merge once CI is green, then delete the branch.
+
+## Before going live
+
+[content/legal-pages.ts](content/legal-pages.ts) holds the imprint and the privacy policy. They
+contain `[[PLATZHALTER: ...]]` markers and the privacy policy is a draft (`draft: true`).
+[content/release.test.ts](content/release.test.ts) fails the build for any public
+`NEXT_PUBLIC_SITE_URL` until all placeholders are filled and the privacy policy is reviewed and set
+to `draft: false`.
 
 ## Hosting
 

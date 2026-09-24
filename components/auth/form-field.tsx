@@ -1,3 +1,5 @@
+import { useId } from "react";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -10,7 +12,8 @@ type FormFieldProps = React.ComponentProps<"input"> & {
 
 /** Labeled input with hint and error messages linked for screen readers. */
 export function FormField({ name, label, hint, errors, ...inputProps }: FormFieldProps) {
-  const id = `field-${name}`;
+  // Unique per instance: several forms on one page may use the same field name.
+  const id = `${useId()}-${name}`;
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = errors?.length ? `${id}-error` : undefined;
 

@@ -8,7 +8,7 @@ export const mainNavigation = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/roadmap", label: "Roadmap" },
   { href: "/tools", label: "Tools" },
-  { href: "/vorlagen", label: "Vorlagen" },
+  { href: "/wissen", label: "Wissen" },
   { href: "/profil", label: "Profil" },
 ] as const satisfies readonly NavItem[];
 

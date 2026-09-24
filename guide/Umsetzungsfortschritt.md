@@ -9,8 +9,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | 1     | Project Setup                     | ✅ Fertig     | 24.09.2026    |
 | 2     | Content Architecture              | ✅ Fertig     | 24.09.2026    |
 | 3     | Authentication & Persistence      | ✅ Fertig     | 24.09.2026    |
-| 4     | Product Structure & Legal Pages   | ⏳ Als Nächstes |               |
-| 5     | Onboarding                        | Offen         |               |
+| 4     | Product Structure & Legal Pages   | ✅ Fertig     | 24.09.2026    |
+| 5     | Onboarding                        | ⏳ Als Nächstes |               |
 | 6     | Roadmap & Task System             | Offen         |               |
 | 7     | Dashboard                         | Offen         |               |
 | 8     | Tools                             | Offen         |               |
@@ -27,6 +27,7 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 | Roadmap-Texte durchsehen    | Eugenia     | Vor dem Livegang                      | Ja       |
 | Supabase-Cloud-Projekt anlegen | Eugenia  | Bevor die App online geht (Ende MVP)  | Ja       |
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
+| Impressum und Datenschutz fertigstellen | Eugenia | Bevor die App online geht | Ja |
 | Projekt aus OneDrive lösen  | Eugenia     | Nur falls der Rechner langsam wird    | Nein     |
 
 ### Roadmap-Texte durchsehen
@@ -36,6 +37,17 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 **Warum:** Die Texte sind ein erster Entwurf aus Phase 2. Sie sind das, was Nutzer später als Anleitung lesen, und sollten deshalb fachlich geprüft sein. Ändern lassen sich Titel und Beschreibungen jederzeit. Nur die IDs (`id: "..."`) dürfen nach dem Livegang nicht mehr geändert werden, weil der gespeicherte Fortschritt der Nutzer daran hängt.
 
 **Offene Stilfrage:** Die Texte verwenden „Kunden“ und „Freelancer“ in der männlichen Grundform. Wo es leicht ging, sind sie neutral formuliert („Ansprechperson“). Falls die App durchgehend gendern soll, müsste das vor der Durchsicht entschieden werden.
+
+### Impressum und Datenschutz fertigstellen
+
+- [ ] Im Impressum Name, Anschrift und E-Mail-Adresse eintragen.
+- [ ] Die Datenschutzerklärung prüfen lassen oder mit einem Datenschutz-Generator abgleichen, die markierten Stellen ergänzen (Hosting, E-Mail-Dienst, Speicherfristen) und sie als geprüft markieren.
+
+**Wo:** Beide Texte stehen in [content/legal-pages.ts](../content/legal-pages.ts). Fehlende Stellen sind als `[[PLATZHALTER: …]]` markiert und auf der Seite gelb hervorgehoben.
+
+**Warum:** Ohne vollständiges Impressum und korrekte Datenschutzerklärung darf die App nicht öffentlich betrieben werden. Die Datenschutzerklärung ist ein Entwurf von Claude und keine Rechtsberatung.
+
+**Absicherung:** Ein automatischer Check bricht den Build ab, sobald die App für eine öffentliche Adresse gebaut wird und noch Platzhalter übrig sind oder die Datenschutzerklärung noch als Entwurf markiert ist.
 
 ### Supabase-Cloud-Projekt anlegen
 
@@ -249,3 +261,44 @@ Nutzer können sich jetzt registrieren, ihre E-Mail-Adresse bestätigen, sich an
 ### Nächster Schritt
 
 Weiter mit **Phase 4: Product Structure & Legal Pages**.
+
+---
+
+## Phase 4 – Product Structure & Legal Pages
+
+**Status:** fertig am 24.09.2026, auf `main` gemergt.
+
+### Testergebnisse
+
+- 85 Unit-Tests sind grün (davon 14 neu). 2 weitere Tests (Release-Check) werden lokal wie gewünscht übersprungen.
+- 24 Datenbanktests sind grün (davon 6 neu für „Konto löschen“).
+- 42 End-to-End-Tests sind grün, auf Handy und Desktop.
+- Release-Check geprüft: Ein simulierter Build für eine öffentliche Adresse bricht wie gewünscht ab.
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+
+### Was jetzt steht
+
+- **Navigation:** Dashboard, Roadmap, Tools, **Wissen**, Profil. „Wissen“ ersetzt „Vorlagen“ und enthält zwei Bereiche: Vorlagen (Phase 9) und Deutschland-Grundlagen (Phase 10).
+- **Tools:** Die Seite zeigt die drei Tools aus dem Content-Modell an, vorerst als „Bald verfügbar“ (Phase 8).
+- **Startseite:** Neuer Abschnitt „So funktioniert's“ mit drei Schritten.
+- **Onboarding:** Platzhalterseite, nur mit Anmeldung (Inhalt folgt in Phase 5).
+- **Profil:**
+  - Konto: E-Mail-Adresse und Abmelden
+  - „Angaben ändern“: führt ins Onboarding (Phase 5)
+  - Passwort ändern: nur mit dem aktuellen Passwort
+  - Konto löschen: nur mit dem aktuellen Passwort. Alle Daten werden sofort mitgelöscht, danach erscheint eine Bestätigungsseite.
+- **Impressum und Datenschutzerklärung:** mit Platzhaltern und Entwurf-Hinweis, siehe „Offene Punkte“.
+- **`npm run db:migrate`:** wendet neue Datenbank-Migrationen an, ohne vorhandene Daten zu löschen.
+
+### Gefundene und behobene Fehler
+
+- **Doppelte Feld-IDs:** Passwort ändern und Konto löschen hatten beide ein Feld `currentPassword`. Dadurch gab es dieselbe HTML-ID zweimal, und das Passwortfeld im Löschformular war für Screenreader nicht beschriftet. Die Felder haben jetzt eindeutige IDs. Gefunden hat das der End-to-End-Test.
+
+### Hinweise
+
+- **Lokale Testdaten gelöscht:** Beim Einspielen der neuen Migration wurde die lokale Datenbank mit `db:reset` zurückgesetzt. Das eigene Testkonto aus Phase 3 ist dadurch gelöscht und muss neu registriert werden. Neue Migrationen werden ab jetzt mit `npm run db:migrate` eingespielt.
+- **OneDrive:** Der Build scheiterte einmal daran, dass OneDrive Dateien im Build-Ordner festhielt; beim zweiten Versuch lief er durch (siehe „Projekt aus OneDrive lösen“).
+
+### Nächster Schritt
+
+Weiter mit **Phase 5: Onboarding**.

@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 
+import { LegalDocument } from "@/components/legal/legal-document";
 import { PageContainer } from "@/components/layout/page-container";
+import { imprint } from "@/content/legal-pages";
 
 export const metadata: Metadata = { title: "Impressum" };
 
-// Placeholder – implemented in Phase 4/11.
 export default function ImprintPage() {
-  return <PageContainer title="Impressum" description="Dieser Bereich ist noch in Arbeit." />;
+  return (
+    <PageContainer title="Impressum">
+      <LegalDocument sections={imprint.sections} />
+    </PageContainer>
+  );
 }

@@ -1,4 +1,4 @@
-import { Compass, LayoutDashboard, type LucideIcon, User, Wrench, FileText } from "lucide-react";
+import { BookOpen, Compass, LayoutDashboard, type LucideIcon, User, Wrench } from "lucide-react";
 
 import type { mainNavigation } from "@/lib/navigation";
 
@@ -8,6 +8,6 @@ export const navIcons: Record<MainHref, LucideIcon> = {
   "/dashboard": LayoutDashboard,
   "/roadmap": Compass,
   "/tools": Wrench,
-  "/vorlagen": FileText,
+  "/wissen": BookOpen,
   "/profil": User,
 };
