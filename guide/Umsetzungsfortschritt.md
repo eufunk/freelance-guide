@@ -8,8 +8,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | ----- | --------------------------------- | ------------- | ------------- |
 | 1     | Project Setup                     | ✅ Fertig     | 24.09.2026    |
 | 2     | Content Architecture              | ✅ Fertig     | 24.09.2026    |
-| 3     | Authentication & Persistence      | ⏳ Als Nächstes |               |
-| 4     | Product Structure & Legal Pages   | Offen         |               |
+| 3     | Authentication & Persistence      | ✅ Fertig     | 24.09.2026    |
+| 4     | Product Structure & Legal Pages   | ⏳ Als Nächstes |               |
 | 5     | Onboarding                        | Offen         |               |
 | 6     | Roadmap & Task System             | Offen         |               |
 | 7     | Dashboard                         | Offen         |               |
@@ -201,3 +201,51 @@ Alle Inhalte der App liegen jetzt als Dateien im Ordner `content/`, getrennt von
 ### Nächster Schritt
 
 Weiter mit **Phase 3: Authentication & Persistence**, mit der lokalen Datenbank.
+
+---
+
+## Phase 3 – Authentication & Persistence
+
+**Status:** fertig am 24.09.2026, auf `main` gemergt. Im Browser getestet: Registrierung, E-Mail-Bestätigung und Anmeldung funktionieren.
+
+Nutzer können sich jetzt registrieren, ihre E-Mail-Adresse bestätigen, sich an- und abmelden und ein vergessenes Passwort zurücksetzen. Die Datenbank hat Tabellen für Profil, Task-Fortschritt und Rechner-Ergebnisse. Jeder Nutzer kann nur seine eigenen Daten sehen.
+
+### Testergebnisse
+
+- 71 Unit-Tests sind grün (davon 40 neu).
+- 18 Datenbanktests sind grün. Gegenprobe: Mit einer absichtlich eingebauten Lücke (jeder darf alle Profile lesen) schlägt der passende Test fehl.
+- 24 End-to-End-Tests sind grün, auf Handy und Desktop, ohne Wiederholungen. Sie spielen die kompletten Abläufe durch, inklusive der E-Mails aus Mailpit:
+  - Registrieren, E-Mail bestätigen, abmelden, wieder anmelden
+  - Anmelden ist erst nach der Bestätigung möglich
+  - Passwort vergessen und neu setzen
+  - Geschützte Seiten leiten zur Anmeldung und danach zurück
+  - Ungültige Links und manipulierte Weiterleitungen werden abgefangen
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+
+### Was jetzt steht
+
+- **Seiten:** Registrieren, Anmelden, Passwort vergessen, Neues Passwort. Auf der Startseite führt „Loslegen“ zur Registrierung. Im Header steht für Nicht-Angemeldete „Anmelden“. Abmelden geht über „Profil“.
+- **Deutsche E-Mails** für die Bestätigung und das Zurücksetzen des Passworts.
+- **Passwortregeln:** mindestens 8 Zeichen, mit Buchstaben und Zahlen.
+- **Datenschutz im Formular:** Registrierung und „Passwort vergessen“ antworten gleich, egal ob es die E-Mail-Adresse schon gibt. So lässt sich nicht herausfinden, wer ein Konto hat.
+- **Geschützte Seiten:** Dashboard, Roadmap und Profil nur mit Anmeldung. Tools und Vorlagen bleiben ohne Konto nutzbar, damit man die App erst ausprobieren kann.
+- **Datenbank:**
+  - `profiles`: wird bei der Registrierung automatisch angelegt und im Onboarding (Phase 5) gefüllt
+  - `task_progress`: Status jedes Tasks pro Nutzer
+  - `calculator_results`: letztes Ergebnis je Rechner
+  - Zugriffsregeln: Jeder kann nur seine eigenen Zeilen lesen und ändern. Nicht angemeldete Besucher haben gar keinen Zugriff.
+  - Wird ein Konto gelöscht, werden alle zugehörigen Daten automatisch mitgelöscht.
+- **Datenzugriff** für die späteren Phasen: Profil lesen und ändern, Task-Status setzen, Rechner-Ergebnis speichern.
+- **Automatische Prüfung auf GitHub** startet jetzt eine Supabase-Instanz und führt dort auch die Datenbank- und End-to-End-Tests aus.
+
+### Abweichungen vom Plan
+
+- **Tabelle `events`** (Tracking) ist noch nicht angelegt. Sie gehört laut ToDo-Liste zu Phase 11.
+- **Konto löschen:** Die Datenbank ist vorbereitet (alle Daten werden mitgelöscht). Die Funktion in den Einstellungen kommt in Phase 4.
+- **Eigener E-Mail-Versand (SMTP):** Lokal nicht nötig, weil alle Mails in Mailpit landen. Wird eingerichtet, wenn die App online geht.
+- **Alle Seiten werden pro Anfrage gerendert**, weil der Header den Anmeldestatus prüft. Für diese App ist das kein Nachteil.
+- **Eigener Port 3200:** Auf Port 3000 läuft auf diesem Rechner die App `software-developer-portfolio`. Der Freelance Guide läuft deshalb fest auf **http://localhost:3200**. Auch die Links in den Bestätigungsmails zeigen dorthin.
+
+### Nächster Schritt
+
+Weiter mit **Phase 4: Product Structure & Legal Pages**.

@@ -3,6 +3,7 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+import type { Database } from "@/lib/db/database.types";
 import { getPublicEnv } from "@/lib/env";
 
 /**
@@ -13,7 +14,7 @@ export async function createClient() {
   const env = getPublicEnv();
   const cookieStore = await cookies();
 
-  return createServerClient(
+  return createServerClient<Database>(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
@@ -28,7 +29,7 @@ export async function createClient() {
             }
           } catch {
             // Called from a Server Component, where cookies are read-only.
-            // The session is refreshed in proxy.ts instead (added in Phase 3).
+            // proxy.ts refreshes the session on every request instead.
           }
         },
       },

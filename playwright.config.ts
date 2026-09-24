@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Own port, so the tests never run against another dev server on 3000.
+// Own port, so the tests never run against the dev server (3200) or other apps.
 const port = 3100;
 const baseURL = `http://localhost:${port}`;
 

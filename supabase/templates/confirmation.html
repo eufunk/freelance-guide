@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+  <body
+    style="
+      font-family:
+        system-ui,
+        -apple-system,
+        sans-serif;
+      color: #171717;
+      line-height: 1.5;
+    "
+  >
+    <h1 style="font-size: 20px">Willkommen beim Freelance Guide</h1>
+    <p>Bitte bestätige deine E-Mail-Adresse, damit du loslegen kannst:</p>
+    <p>
+      <a
+        href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/dashboard"
+        style="
+          display: inline-block;
+          padding: 12px 20px;
+          background: #171717;
+          color: #ffffff;
+          border-radius: 8px;
+          text-decoration: none;
+        "
+        >E-Mail-Adresse bestätigen</a
+      >
+    </p>
+    <p style="color: #666666; font-size: 14px">
+      Der Link ist eine Stunde gültig. Wenn du dich nicht beim Freelance Guide registriert hast,
+      kannst du diese E-Mail ignorieren.
+    </p>
+  </body>
+</html>
