@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { isActivePath, mainNavigation } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader() {
+/** `actions` is rendered on the right, e.g. the login link. */
+export function SiteHeader({ actions }: { actions?: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
@@ -38,6 +39,7 @@ export function SiteHeader() {
             })}
           </ul>
         </nav>
+        {actions && <div className="ml-auto pl-2 md:ml-2">{actions}</div>}
       </div>
     </header>
   );

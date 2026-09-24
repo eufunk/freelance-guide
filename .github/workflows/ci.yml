@@ -19,6 +19,16 @@ jobs:
       - run: npm run format:check
       - run: npm run typecheck
       - run: npm test
+
+      # Local Supabase stack for the database and E2E tests. On Linux, Docker
+      # runs natively, so the CLI is called directly instead of through WSL.
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.117.0
+      - run: supabase start
+      - run: supabase test db
+      - run: cp .env.example .env.local
+
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e

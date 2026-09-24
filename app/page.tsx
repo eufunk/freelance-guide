@@ -13,9 +13,12 @@ export default function HomePage() {
         Der Freelance Guide zeigt dir Schritt für Schritt, was als Nächstes zu tun ist – bis zu
         deinem ersten Kunden.
       </p>
-      <div>
-        <Link href="/dashboard" className={buttonVariants({ size: "lg" })}>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <Link href="/registrieren" className={buttonVariants({ size: "lg" })}>
           Loslegen
+        </Link>
+        <Link href="/anmelden" className={buttonVariants({ size: "lg", variant: "outline" })}>
+          Ich habe schon ein Konto
         </Link>
       </div>
     </PageContainer>

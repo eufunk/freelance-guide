@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { Suspense } from "react";
+
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { HeaderAuth } from "@/components/layout/header-auth";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 
@@ -37,7 +40,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="de" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <SiteHeader />
+        <SiteHeader
+          actions={
+            // Streams in after the page shell, so the session check doesn't delay the page.
+            <Suspense fallback={null}>
+              <HeaderAuth />
+            </Suspense>
+          }
+        />
         {/* Bottom padding keeps content clear of the fixed mobile navigation. */}
         <main className="flex-1 pb-20 md:pb-0">{children}</main>
         <div className="pb-20 md:pb-0">

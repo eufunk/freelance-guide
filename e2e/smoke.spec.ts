@@ -8,15 +8,15 @@ test("landing page shows the headline and a start button", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Loslegen" })).toBeVisible();
 });
 
-test("main navigation leads to the roadmap and marks it as active", async ({ page }) => {
+test("main navigation leads to the tools and marks them as active", async ({ page }) => {
   await page.goto("/");
 
   const nav = page.getByRole("navigation", { name: "Hauptnavigation" }).filter({ visible: true });
-  await nav.getByRole("link", { name: "Roadmap" }).click();
+  await nav.getByRole("link", { name: "Tools" }).click();
 
-  await expect(page).toHaveURL(/\/roadmap$/);
-  await expect(page.getByRole("heading", { level: 1, name: "Roadmap" })).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Roadmap" })).toHaveAttribute("aria-current", "page");
+  await expect(page).toHaveURL(/\/tools$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Tools" })).toBeVisible();
+  await expect(nav.getByRole("link", { name: "Tools" })).toHaveAttribute("aria-current", "page");
 });
 
 test("footer links to imprint and privacy policy", async ({ page }) => {

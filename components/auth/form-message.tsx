@@ -1,0 +1,18 @@
+import { cn } from "@/lib/utils";
+
+/** Success or error message above/below a form. Announced by screen readers. */
+export function FormMessage({ type, children }: { type: "error" | "success"; children: string }) {
+  return (
+    <p
+      role={type === "error" ? "alert" : "status"}
+      className={cn(
+        "rounded-lg border px-4 py-3 text-sm",
+        type === "error"
+          ? "border-destructive/30 bg-destructive/10 text-destructive"
+          : "border-emerald-600/30 bg-emerald-600/10 text-emerald-900 dark:text-emerald-200",
+      )}
+    >
+      {children}
+    </p>
+  );
+}

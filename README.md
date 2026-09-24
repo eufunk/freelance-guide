@@ -20,7 +20,7 @@ Requirements: Node.js 24+.
 npm install
 cp .env.example .env.local   # values for the local database
 npm run db:start             # local Supabase, see "Local database"
-npm run dev                  # http://localhost:3000
+npm run dev                  # http://localhost:3200
 ```
 
 Pages that don't use Supabase work without a configured `.env.local` or a running database.
@@ -47,6 +47,8 @@ Daily use (from Windows, in the project folder):
 | `npm run db:stop`   | Stop Supabase (data is kept) and let WSL shut down again  |
 | `npm run db:status` | Show URLs and keys                                        |
 | `npm run db:reset`  | Recreate the database from the migrations (deletes data!) |
+| `npm run db:test`   | Database tests (pgTAP, `supabase/tests/`)                 |
+| `npm run db:types`  | Regenerate `lib/db/database.types.ts` after a migration   |
 
 | Service           | URL                    |
 | ----------------- | ---------------------- |
@@ -59,14 +61,31 @@ Daily use (from Windows, in the project folder):
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:3200
 ```
 
 Realtime, Storage, Edge Functions and Analytics are disabled in
 [supabase/config.toml](supabase/config.toml) because the MVP doesn't use them.
 
 Migrations live in [supabase/migrations/](supabase/migrations/). Create one with
-`wsl -d Ubuntu -- supabase migration new <name>`.
+`wsl -d Ubuntu -- supabase migration new <name>`, apply it with `npm run db:reset`, then run
+`npm run db:types` and `npm run db:test`.
+
+### Authentication
+
+Supabase Auth with email and password. Email confirmation is required; locally all emails land in
+Mailpit. The email templates (German) are in [supabase/templates/](supabase/templates/) and link to
+[app/auth/confirm/route.ts](app/auth/confirm/route.ts).
+
+- **Who is logged in** is decided in one place: [lib/auth/dal.ts](lib/auth/dal.ts). Pages and
+  Server Functions call `requireUser()`; data access in [lib/db/](lib/db/) does too.
+- [proxy.ts](proxy.ts) refreshes the session and redirects optimistically (protected pages →
+  login, login page → dashboard). It is not the security boundary.
+- **Row Level Security** in the database is the last line: users can only read and write their own
+  rows. [supabase/tests/database/](supabase/tests/database/) tests this.
+- Protected pages are listed in [lib/auth/paths.ts](lib/auth/paths.ts).
+
+The E2E tests need the local database (`npm run db:start`) and read emails from Mailpit.
 
 ### Supabase Cloud (later)
 

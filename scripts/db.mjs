@@ -5,13 +5,14 @@
 // would take the database down in the middle of development. `start` therefore
 // keeps a hidden `sleep infinity` session open until `stop` ends it.
 //
-// Usage: node scripts/db.mjs <start|stop|status|reset>
+// Usage: node scripts/db.mjs <start|stop|status|reset|test|types>
 
 import { spawn, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
 const DISTRO = process.env.WSL_DISTRO ?? "Ubuntu";
 const PID_FILE = "supabase/.temp/wsl-keepalive.pid";
+const TYPES_FILE = "lib/db/database.types.ts";
 
 function wsl(args, options = {}) {
   return spawnSync("wsl.exe", ["-d", DISTRO, "--", ...args], { stdio: "inherit", ...options });
@@ -70,11 +71,23 @@ switch (command) {
     process.exit(result.status ?? 1);
   }
   case "status":
-  case "reset": {
-    const args = command === "reset" ? ["supabase", "db", "reset"] : ["supabase", "status"];
-    process.exit(wsl(args).status ?? 1);
+    process.exit(wsl(["supabase", "status"]).status ?? 1);
+  case "reset":
+    process.exit(wsl(["supabase", "db", "reset"]).status ?? 1);
+  case "test":
+    process.exit(wsl(["supabase", "test", "db"]).status ?? 1);
+  case "types": {
+    // Generates TypeScript types from the local database schema.
+    const result = wsl(["supabase", "gen", "types", "typescript", "--local"], {
+      stdio: ["ignore", "pipe", "inherit"],
+      encoding: "utf8",
+    });
+    if (result.status !== 0) process.exit(result.status ?? 1);
+    writeFileSync(TYPES_FILE, result.stdout);
+    console.log(`Wrote ${TYPES_FILE}`);
+    break;
   }
   default:
-    console.error("Usage: node scripts/db.mjs <start|stop|status|reset>");
+    console.error("Usage: node scripts/db.mjs <start|stop|status|reset|test|types>");
     process.exit(1);
 }
