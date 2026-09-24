@@ -18,28 +18,61 @@ Requirements: Node.js 24+.
 
 ```bash
 npm install
-cp .env.example .env.local   # then fill in the Supabase values
+cp .env.example .env.local   # values for the local database
+npm run db:start             # local Supabase, see "Local database"
 npm run dev                  # http://localhost:3000
 ```
 
-Pages that don't use Supabase work without a configured `.env.local`. Anything that talks to
-Supabase throws a clear error naming the missing variables.
+Pages that don't use Supabase work without a configured `.env.local` or a running database.
+Anything that talks to Supabase throws a clear error naming missing variables.
 
-### Supabase
+### Local database
 
-Create a project at [supabase.com](https://supabase.com) in the region **Central EU (Frankfurt)**
-and copy the project URL and the publishable key into `.env.local`.
+Development uses a **local Supabase stack** (Postgres, Auth, Studio, Mailpit). It runs with
+Docker inside WSL (Ubuntu), not with Docker Desktop: Docker Desktop needs `wsl --mount`, which
+on Windows ARM64 requires Windows build 27653 or later.
 
-The CLI configuration and database migrations live in [supabase/](supabase/). The CLI runs via npx:
+One-time setup inside WSL Ubuntu (as root):
 
 ```bash
-npx supabase login
-npx supabase link --project-ref <project-ref>
-npx supabase migration new <name>   # create a migration
-npx supabase db push                # apply migrations to the linked project
+apt-get install -y docker.io && systemctl enable --now docker
+# Supabase CLI: .deb from https://github.com/supabase/cli/releases (linux_arm64)
 ```
 
-A local Supabase stack (`npx supabase start`) additionally needs Docker.
+Daily use (from Windows, in the project folder):
+
+| Script              | Purpose                                                   |
+| ------------------- | --------------------------------------------------------- |
+| `npm run db:start`  | Start Supabase and keep WSL awake until `db:stop`         |
+| `npm run db:stop`   | Stop Supabase (data is kept) and let WSL shut down again  |
+| `npm run db:status` | Show URLs and keys                                        |
+| `npm run db:reset`  | Recreate the database from the migrations (deletes data!) |
+
+| Service           | URL                    |
+| ----------------- | ---------------------- |
+| API (for the app) | http://127.0.0.1:54321 |
+| Studio (admin UI) | http://127.0.0.1:54323 |
+| Mailpit (emails)  | http://127.0.0.1:54324 |
+
+`.env.local` for the local stack (the keys are the fixed defaults of every local stack):
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+Realtime, Storage, Edge Functions and Analytics are disabled in
+[supabase/config.toml](supabase/config.toml) because the MVP doesn't use them.
+
+Migrations live in [supabase/migrations/](supabase/migrations/). Create one with
+`wsl -d Ubuntu -- supabase migration new <name>`.
+
+### Supabase Cloud (later)
+
+Before going live, create a project at [supabase.com](https://supabase.com) in the region
+**Central EU (Frankfurt)**, link it (`supabase link --project-ref <ref>`), apply the migrations
+(`supabase db push`) and put its URL and publishable key into the hosting environment.
 
 ## Scripts
 

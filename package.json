@@ -14,7 +14,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "content:check": "vitest run content"
+    "content:check": "vitest run content",
+    "db:start": "node scripts/db.mjs start",
+    "db:stop": "node scripts/db.mjs stop",
+    "db:status": "node scripts/db.mjs status",
+    "db:reset": "node scripts/db.mjs reset"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
