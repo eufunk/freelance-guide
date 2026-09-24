@@ -5,7 +5,7 @@
 // would take the database down in the middle of development. `start` therefore
 // keeps a hidden `sleep infinity` session open until `stop` ends it.
 //
-// Usage: node scripts/db.mjs <start|stop|status|reset|test|types>
+// Usage: node scripts/db.mjs <start|stop|status|migrate|reset|test|types>
 
 import { spawn, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -72,6 +72,9 @@ switch (command) {
   }
   case "status":
     process.exit(wsl(["supabase", "status"]).status ?? 1);
+  case "migrate":
+    // Applies new migrations only; existing data is kept.
+    process.exit(wsl(["supabase", "migration", "up"]).status ?? 1);
   case "reset":
     process.exit(wsl(["supabase", "db", "reset"]).status ?? 1);
   case "test":
@@ -88,6 +91,6 @@ switch (command) {
     break;
   }
   default:
-    console.error("Usage: node scripts/db.mjs <start|stop|status|reset|test|types>");
+    console.error("Usage: node scripts/db.mjs <start|stop|status|migrate|reset|test|types>");
     process.exit(1);
 }

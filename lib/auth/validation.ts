@@ -34,6 +34,17 @@ export const newPasswordSchema = z
     path: ["passwordConfirmation"],
   });
 
+const currentPassword = z.string().min(1, "Bitte gib dein aktuelles Passwort ein.");
+
+export const changePasswordSchema = z
+  .object({ currentPassword, password: newPassword, passwordConfirmation: z.string() })
+  .refine((data) => data.password === data.passwordConfirmation, {
+    message: "Die Passwörter stimmen nicht überein.",
+    path: ["passwordConfirmation"],
+  });
+
+export const deleteAccountSchema = z.object({ currentPassword });
+
 export type FieldErrors = Partial<Record<string, string[]>>;
 
 /** Field errors keyed by field name, for showing them next to the inputs. */

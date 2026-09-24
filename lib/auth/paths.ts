@@ -5,7 +5,7 @@ export const LOGIN_PATH = "/anmelden";
 export const AFTER_LOGIN_PATH = "/dashboard";
 
 /** Pages that require a logged-in user. */
-const PROTECTED_PATHS = ["/dashboard", "/roadmap", "/profil", "/passwort-neu"];
+const PROTECTED_PATHS = ["/dashboard", "/roadmap", "/profil", "/onboarding", "/passwort-neu"];
 
 /** Pages that make no sense when logged in; they redirect to the dashboard. */
 const LOGGED_OUT_ONLY_PATHS = ["/anmelden", "/registrieren"];

@@ -3,19 +3,28 @@ import { describe, expect, it } from "vitest";
 import { isLoggedOutOnlyPath, isProtectedPath, loginPathFor, safeNextPath } from "./paths";
 
 describe("isProtectedPath", () => {
-  it.each(["/dashboard", "/roadmap", "/roadmap/build-portfolio", "/profil", "/passwort-neu"])(
-    "protects %s",
-    (path) => {
-      expect(isProtectedPath(path)).toBe(true);
-    },
-  );
+  it.each([
+    "/dashboard",
+    "/roadmap",
+    "/roadmap/build-portfolio",
+    "/profil",
+    "/onboarding",
+    "/passwort-neu",
+  ])("protects %s", (path) => {
+    expect(isProtectedPath(path)).toBe(true);
+  });
 
-  it.each(["/", "/tools", "/vorlagen", "/anmelden", "/impressum", "/dashboards"])(
-    "does not protect %s",
-    (path) => {
-      expect(isProtectedPath(path)).toBe(false);
-    },
-  );
+  it.each([
+    "/",
+    "/tools",
+    "/wissen",
+    "/wissen/grundlagen",
+    "/anmelden",
+    "/impressum",
+    "/dashboards",
+  ])("does not protect %s", (path) => {
+    expect(isProtectedPath(path)).toBe(false);
+  });
 });
 
 describe("isLoggedOutOnlyPath", () => {

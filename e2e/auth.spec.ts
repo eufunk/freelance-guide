@@ -1,44 +1,9 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
+import { confirmEmail, formAlert, logIn, logOut, register, uniqueEmail } from "./helpers/auth";
 import { confirmPathFrom, waitForEmail } from "./helpers/mailpit";
 
 // Full authentication flows against the local Supabase stack (npm run db:start).
-
-const PASSWORD = "geheim123";
-
-function uniqueEmail() {
-  return `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`;
-}
-
-async function register(page: Page, email: string, password = PASSWORD) {
-  await page.goto("/registrieren");
-  await page.getByLabel("E-Mail-Adresse").fill(email);
-  await page.getByLabel("Passwort").fill(password);
-  await page.getByRole("button", { name: "Konto erstellen" }).click();
-  await expect(page.getByRole("status")).toContainText("Wir haben dir eine E-Mail");
-}
-
-async function confirmEmail(page: Page, email: string) {
-  const html = await waitForEmail(email, "Bitte bestätige deine E-Mail-Adresse");
-  await page.goto(confirmPathFrom(html));
-}
-
-async function logIn(page: Page, email: string, password = PASSWORD) {
-  await page.getByLabel("E-Mail-Adresse").fill(email);
-  await page.getByLabel("Passwort", { exact: true }).fill(password);
-  await page.getByRole("button", { name: "Anmelden", exact: true }).click();
-}
-
-/** Our form message. Next.js also renders an (empty) route announcer with role="alert". */
-function formAlert(page: Page, text: string) {
-  return page.getByRole("alert").filter({ hasText: text });
-}
-
-async function logOut(page: Page) {
-  await page.goto("/profil");
-  await page.getByRole("button", { name: "Abmelden" }).click();
-  await expect(page).toHaveURL("/");
-}
 
 test("protected pages send logged-out visitors to the login page", async ({ page }) => {
   await page.goto("/roadmap");
