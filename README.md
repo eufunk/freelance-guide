@@ -43,18 +43,19 @@ A local Supabase stack (`npx supabase start`) additionally needs Docker.
 
 ## Scripts
 
-| Script                 | Purpose                                         |
-| ---------------------- | ----------------------------------------------- |
-| `npm run dev`          | Start the dev server                            |
-| `npm run build`        | Production build                                |
-| `npm run start`        | Serve the production build                      |
-| `npm run lint`         | ESLint                                          |
-| `npm run typecheck`    | TypeScript check                                |
-| `npm run format`       | Format all files with Prettier                  |
-| `npm run format:check` | Check formatting                                |
-| `npm test`             | Unit tests (Vitest)                             |
-| `npm run test:watch`   | Unit tests in watch mode                        |
-| `npm run test:e2e`     | End-to-end tests (Playwright, mobile + desktop) |
+| Script                  | Purpose                                         |
+| ----------------------- | ----------------------------------------------- |
+| `npm run dev`           | Start the dev server                            |
+| `npm run build`         | Production build                                |
+| `npm run start`         | Serve the production build                      |
+| `npm run lint`          | ESLint                                          |
+| `npm run typecheck`     | TypeScript check                                |
+| `npm run format`        | Format all files with Prettier                  |
+| `npm run format:check`  | Check formatting                                |
+| `npm test`              | Unit tests (Vitest)                             |
+| `npm run test:watch`    | Unit tests in watch mode                        |
+| `npm run test:e2e`      | End-to-end tests (Playwright, mobile + desktop) |
+| `npm run content:check` | Validate all content (runs before every build)  |
 
 Before the first E2E run: `npx playwright install chromium`.
 
@@ -83,9 +84,26 @@ guide/               Product spec and TODO
 
 ### Editing content
 
-From Phase 2, all content (roadmap, tasks, templates, legal articles) lives as files in
-`content/` and is validated at build time. To change content, edit the file, run `npm run build`
-to validate it, and open a pull request.
+All content lives as TypeScript files in [content/](content/):
+
+| File                                                       | Content                                    |
+| ---------------------------------------------------------- | ------------------------------------------ |
+| [content/roadmap.ts](content/roadmap.ts)                   | Roadmap stages and their tasks             |
+| [content/tools.ts](content/tools.ts)                       | Tools that stages can link to              |
+| [content/onboarding-rules.ts](content/onboarding-rules.ts) | Which stages onboarding proposes as done   |
+| [content/templates.ts](content/templates.ts)               | Templates (from Phase 9)                   |
+| [content/legal-articles.ts](content/legal-articles.ts)     | Germany-specific legal/tax info (Phase 10) |
+
+The schemas are in [lib/content/schema.ts](lib/content/schema.ts); the app reads content only
+through [lib/content/index.ts](lib/content/index.ts).
+
+- **Order** of stages and tasks is the order in the file. There is no `order` field.
+- **IDs** are kebab-case and stored in the database with the user's progress. Never rename or
+  reuse an ID once deployed; add a new one instead. `content/content.test.ts` fails if a task ID
+  disappears.
+- **Validation:** `npm run content:check` checks all content: the shape, unique IDs, and
+  references (tools, templates, onboarding rules, template placeholders, legal sources and dates).
+  It runs automatically before every build, so invalid content never ships.
 
 ## Git workflow
 

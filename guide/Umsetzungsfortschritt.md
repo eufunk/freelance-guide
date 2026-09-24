@@ -7,8 +7,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | Phase | Inhalt                            | Status        | Abgeschlossen |
 | ----- | --------------------------------- | ------------- | ------------- |
 | 1     | Project Setup                     | ✅ Fertig     | 24.09.2026    |
-| 2     | Content Architecture              | ⏳ Als Nächstes |               |
-| 3     | Authentication & Persistence      | Offen         |               |
+| 2     | Content Architecture              | ✅ Fertig     | 24.09.2026    |
+| 3     | Authentication & Persistence      | ⏳ Als Nächstes |               |
 | 4     | Product Structure & Legal Pages   | Offen         |               |
 | 5     | Onboarding                        | Offen         |               |
 | 6     | Roadmap & Task System             | Offen         |               |
@@ -20,22 +20,23 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 
 ## Offene Punkte
 
-Diese Punkte gehören zu keiner bestimmten Phase. Für Phase 2 ist keiner davon nötig.
+Diese Punkte gehören zu keiner bestimmten Phase.
 
 | Punkt                       | Wer         | Bis wann                              | Pflicht? |
 | --------------------------- | ----------- | ------------------------------------- | -------- |
-| Phase 1 nach `main` mergen  | Eugenia     | Vor Phase 2                           | Ja       |
+| Roadmap-Texte durchsehen    | Eugenia     | Vor dem Livegang                      | Ja       |
 | Supabase-Projekt anlegen    | Eugenia     | Vor Phase 3 (Login)                   | Ja       |
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
 | Docker installieren         | –           | –                                     | Nein     |
 | Projekt aus OneDrive lösen  | Eugenia     | Nur falls der Rechner langsam wird    | Nein     |
 
-### Phase 1 nach `main` mergen
+### Roadmap-Texte durchsehen
 
-- [x] Alle Änderungen auf dem Branch `feature/phase-1-setup` committet und auf GitHub gepusht (24.09.2026).
-- [ ] Auf GitHub einen Pull Request von `feature/phase-1-setup` nach `main` öffnen, den CI-Lauf abwarten und mergen.
+- [ ] Die Texte der 15 Stufen und ihrer Tasks in [content/roadmap.ts](../content/roadmap.ts) lesen und korrigieren.
 
-**Warum:** Der Code ist jetzt auf GitHub gesichert, liegt aber nur auf dem Branch. Erst nach dem Merge ist er auf `main`, und Phase 2 baut darauf auf. Der Pull Request startet außerdem den CI-Workflow, der alle Prüfungen automatisch laufen lässt.
+**Warum:** Die Texte sind ein erster Entwurf aus Phase 2. Sie sind das, was Nutzer später als Anleitung lesen, und sollten deshalb fachlich geprüft sein. Ändern lassen sich Titel und Beschreibungen jederzeit. Nur die IDs (`id: "..."`) dürfen nach dem Livegang nicht mehr geändert werden, weil der gespeicherte Fortschritt der Nutzer daran hängt.
+
+**Offene Stilfrage:** Die Texte verwenden „Kunden“ und „Freelancer“ in der männlichen Grundform. Wo es leicht ging, sind sie neutral formuliert („Ansprechperson“). Falls die App durchgehend gendern soll, müsste das vor der Durchsicht entschieden werden.
 
 ### Supabase-Projekt anlegen
 
@@ -85,7 +86,7 @@ Mit Docker ließe sich eine Kopie der Datenbank auf dem eigenen Rechner betreibe
 
 ## Phase 1 – Project Setup
 
-**Status:** fertig am 24.09.2026, auf dem Branch `feature/phase-1-setup` committet und gepusht. Der Pull Request nach `main` ist noch offen.
+**Status:** fertig am 24.09.2026, auf `main` gemergt.
 
 Die App ist aufgesetzt, alle automatischen Prüfungen laufen durch und das Layout funktioniert auf Handy und Desktop.
 
@@ -112,4 +113,49 @@ Die App ist aufgesetzt, alle automatischen Prüfungen laufen durch und das Layou
 
 ### Nächster Schritt
 
-Pull Request für Phase 1 mergen, danach weiter mit **Phase 2: Content Architecture** (Content-Modell). Geplant ab 25.09.2026.
+Weiter mit **Phase 2: Content Architecture** (Content-Modell).
+
+---
+
+## Phase 2 – Content Architecture
+
+**Status:** fertig am 24.09.2026, auf `main` gemergt.
+
+Alle Inhalte der App liegen jetzt als Dateien im Ordner `content/`, getrennt von der Oberfläche. Sie werden vor jedem Build automatisch geprüft. Fehlerhafte Inhalte brechen den Build ab.
+
+### Testergebnisse
+
+- 31 Unit-Tests sind grün (davon 24 neu für das Content-Modell).
+- Typecheck, Lint, Formatierung, Production-Build und die 10 End-to-End-Tests laufen ohne Fehler.
+- Absichtlich eingebauter Fehler (zwei Tasks mit derselben ID): Der Build bricht wie gewünscht mit der Meldung `Duplicate task ID "list-skills"` ab.
+
+### Was jetzt steht
+
+- **Content-Modelle** für alle Inhalte aus der ToDo-Liste: Roadmap-Stufe, Task, Ressource, Tool, Vorlage, Rechtsartikel und Onboarding-Regeln.
+- **Inhalte:**
+  - Alle **15 Roadmap-Stufen** auf Deutsch, mit Erklärung und „Warum wichtig“
+  - Ein erster **Entwurf mit 48 Tasks**, jeweils mit Beschreibung und geschätzter Dauer
+  - Die **3 Tools** (Stundensatz, Projektpreis, Startklar-Check), damit Stufen darauf verlinken können
+  - Die **Onboarding-Regeln** aus der Tabelle in Phase 5 der ToDo-Liste
+  - Vorlagen und Rechtsartikel sind noch leer, sie folgen in Phase 9 und 10.
+- **Automatische Prüfung** vor jedem Build (`npm run content:check`):
+  - Alle Pflichtfelder sind ausgefüllt, unbekannte Felder (z. B. Tippfehler wie `titel`) werden gemeldet.
+  - Alle IDs sind eindeutig.
+  - Alle Verweise stimmen: Stufen auf Tools und Vorlagen, Onboarding-Regeln auf Stufen.
+  - Vorlagen verwenden nur bekannte Platzhalter wie `{{name}}`, rechtliche Muster haben einen Hinweis.
+  - Rechtsartikel haben mindestens eine Quelle und ein gültiges Prüfdatum, das nicht in der Zukunft liegt.
+  - Ein Test hält alle Task-IDs fest. Wird eine umbenannt oder gelöscht, schlägt er fehl, bevor gespeicherter Fortschritt verloren geht.
+- **Ladefunktionen** in `lib/content/`, über die die App die Inhalte liest (z. B. `getRoadmap()`, `getTask(id)`).
+- **Hilfsfunktion für Phase 10:** prüft, ob ein Rechtsartikel seit mehr als 12 Monaten nicht mehr geprüft wurde.
+- **Zeilenenden:** Eine `.gitattributes` legt einheitliche Zeilenenden fest. Das behebt die Warnung beim Commit von Phase 1.
+
+### Abweichungen vom Plan
+
+- **Kein `order`-Feld:** Die Reihenfolge von Stufen und Tasks ergibt sich aus ihrer Position in der Datei. So kann es keine doppelten oder lückenhaften Nummern geben. Die App bekommt die Nummer trotzdem mitgeliefert.
+- **Keine `stageId` in den Tasks:** Tasks stehen direkt in ihrer Stufe, die Zuordnung ergibt sich daraus. Auch sie wird beim Laden ergänzt.
+- **Keine Ressourcen-Links:** Die Tasks enthalten noch keine externen Links. Erfundene oder veraltete Links wären schlimmer als keine. Nur `https`-Links sind erlaubt.
+- **Tasks im Startklar-Check:** Die Tasks „Vertragsvorlage besorgen“ und „Rechnungsvorlage vorbereiten“ in Stufe 7 sind schon angelegt, damit der Startklar-Check in Phase 8 darauf verweisen kann.
+
+### Nächster Schritt
+
+Weiter mit **Phase 3: Authentication & Persistence**. Dafür wird das Supabase-Projekt gebraucht (siehe Offene Punkte).
