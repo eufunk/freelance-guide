@@ -25,9 +25,8 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 | Punkt                       | Wer         | Bis wann                              | Pflicht? |
 | --------------------------- | ----------- | ------------------------------------- | -------- |
 | Roadmap-Texte durchsehen    | Eugenia     | Vor dem Livegang                      | Ja       |
-| Supabase-Projekt anlegen    | Eugenia     | Vor Phase 3 (Login)                   | Ja       |
+| Supabase-Cloud-Projekt anlegen | Eugenia  | Bevor die App online geht (Ende MVP)  | Ja       |
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
-| Docker installieren         | –           | –                                     | Nein     |
 | Projekt aus OneDrive lösen  | Eugenia     | Nur falls der Rechner langsam wird    | Nein     |
 
 ### Roadmap-Texte durchsehen
@@ -38,11 +37,13 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 
 **Offene Stilfrage:** Die Texte verwenden „Kunden“ und „Freelancer“ in der männlichen Grundform. Wo es leicht ging, sind sie neutral formuliert („Ansprechperson“). Falls die App durchgehend gendern soll, müsste das vor der Durchsicht entschieden werden.
 
-### Supabase-Projekt anlegen
+### Supabase-Cloud-Projekt anlegen
 
-- [ ] Projekt anlegen und die zwei Werte an Claude geben oder selbst in `.env.local` eintragen.
+- [ ] Projekt anlegen und die zwei Werte an Claude geben.
 
-**Was ist das:** Supabase stellt die Datenbank und den Login bereit. Dort werden die Nutzerkonten gespeichert, außerdem die Onboarding-Antworten und der Fortschritt bei den Tasks.
+**Erst nötig, wenn die App online gehen soll.** Bis dahin läuft die Datenbank lokal (siehe „Lokale Datenbank“ unten).
+
+**Was ist das:** Supabase stellt die Datenbank und den Login bereit. Dort werden die Nutzerkonten gespeichert, außerdem die Onboarding-Antworten und der Fortschritt bei den Tasks. Lokal läuft dieselbe Software auf dem eigenen Rechner; für die öffentliche App braucht es ein Projekt bei Supabase.
 
 **Warum selbst:** Das Projekt läuft unter dem eigenen Konto. Die Daten sollen dem Konto gehören, unter dem die App betrieben wird, und ein Konto lässt sich nicht stellvertretend anlegen.
 
@@ -55,7 +56,7 @@ Diese Punkte gehören zu keiner bestimmten Phase.
    - Region: **Central EU (Frankfurt)**, wichtig für den Datenschutz
    - Plan: Free
 3. In den Projekteinstellungen unter „API“ zwei Werte kopieren: die **Project URL** und den **Publishable key**.
-4. Beide Werte in `.env.local` eintragen (Vorlage: [.env.example](../.env.example)) oder an Claude geben.
+4. Beide Werte an Claude geben. Sie kommen später in die Einstellungen des Hosting-Anbieters.
 
 Der Publishable Key darf weitergegeben werden, er ist für den Browser gedacht. Das Datenbank-Passwort wird nicht weitergegeben.
 
@@ -69,10 +70,6 @@ Der Publishable Key darf weitergegeben werden, er ist für den Browser gedacht. 
 
 **Empfehlung:** Vercel, weil es von den Machern von Next.js stammt und die Einrichtung am einfachsten ist. Die Region wird dort auf Frankfurt (`fra1`) gestellt.
 
-### Docker (optional)
-
-Mit Docker ließe sich eine Kopie der Datenbank auf dem eigenen Rechner betreiben, zum Beispiel zum Testen ohne Internet. Ohne Docker wird direkt mit dem Supabase-Projekt gearbeitet. Für dieses Projekt reicht das aus.
-
 ### Projekt aus OneDrive lösen (optional)
 
 **Warum:** Der Projektordner enthält den Ordner `node_modules` mit über 40.000 kleinen Dateien, die nur die Programmierwerkzeuge brauchen. OneDrive lädt alle diese Dateien in die Cloud hoch. Das kann den Rechner und die Synchronisation spürbar bremsen.
@@ -81,6 +78,51 @@ Mit Docker ließe sich eine Kopie der Datenbank auf dem eigenen Rechner betreibe
 
 - So lassen, solange nichts auffällt.
 - Das Projekt in einen Ordner außerhalb von OneDrive verschieben, zum Beispiel `C:\Projekte\freelance-guide`. Das ist ohne Risiko, weil der Code über Git und GitHub gesichert ist.
+
+---
+
+## Lokale Datenbank (24.09.2026)
+
+**Entscheidung:** Die App läuft vorerst nur lokal. Die Datenbank läuft deshalb auch lokal statt in der Supabase-Cloud. Das Cloud-Projekt wird erst angelegt, bevor die App online geht. Am Code ändert das nichts: Derselbe Stand lässt sich später 1:1 in die Cloud übertragen.
+
+### Warum nicht Docker Desktop
+
+Supabase braucht lokal Docker. Docker Desktop war auf diesem Rechner schon zweimal installiert und wurde wegen Problemen wieder entfernt (zuletzt am 18.08.2026). Die Protokolle von damals zeigen die Ursache:
+
+> „wsl.exe --mount auf ARM64 erfordert Windows 27653 oder höher.“
+
+Der Rechner hat einen ARM-Prozessor und Windows-Build 26200. Docker Desktop konnte seine Daten-Festplatte deshalb nicht einhängen und startete in einer Endlosschleife. Das würde bei einer Neuinstallation wieder passieren, bis Windows auf Build 27653 oder höher ist.
+
+### Lösung: Docker direkt in Ubuntu (WSL)
+
+Docker läuft stattdessen direkt im vorhandenen Ubuntu unter WSL, ohne Docker Desktop. Dafür wird das Einhängen nicht gebraucht.
+
+Eingerichtet wurde:
+
+- **In Ubuntu:** Docker 29.1.3 und die Supabase-CLI 2.117.0. Vorher musste eine ältere, unterbrochene Paketinstallation in Ubuntu abgeschlossen werden (`dpkg --configure -a`).
+- **Supabase lokal** mit Datenbank, Login, Admin-Oberfläche und Test-Postfach. Nicht benötigte Dienste (Datei-Speicher, Echtzeit, Serverfunktionen, Log-Analyse) sind abgeschaltet, um Arbeitsspeicher zu sparen.
+- **`.env.local`** mit den lokalen Zugangsdaten. Das sind feste Standardwerte jeder lokalen Supabase-Installation und keine Geheimnisse.
+- **Start und Stopp per npm-Befehl**, siehe unten. WSL fährt Ubuntu von selbst herunter, wenn gerade niemand damit arbeitet, und damit auch die Datenbank. `npm run db:start` hält Ubuntu deshalb wach, bis `npm run db:stop` aufgerufen wird.
+
+### Benutzung
+
+Im Projektordner in einem Terminal:
+
+| Befehl              | Was passiert                                                              |
+| ------------------- | ------------------------------------------------------------------------- |
+| `npm run db:start`  | Startet die Datenbank. Beim allerersten Mal dauert es einige Minuten.     |
+| `npm run db:stop`   | Stoppt die Datenbank. Die Daten bleiben erhalten.                         |
+| `npm run db:status` | Zeigt, ob sie läuft, und die Adressen.                                    |
+| `npm run db:reset`  | Setzt die Datenbank auf den Ausgangszustand zurück. **Löscht alle Daten.** |
+
+Nach einem Neustart des Rechners ist die Datenbank aus und muss mit `npm run db:start` wieder gestartet werden.
+
+| Oberfläche      | Adresse                | Wofür                                                  |
+| --------------- | ---------------------- | ------------------------------------------------------ |
+| Supabase Studio | http://127.0.0.1:54323 | Tabellen und Nutzer ansehen und bearbeiten             |
+| Mailpit         | http://127.0.0.1:54324 | E-Mails lesen, die die App verschickt (z. B. Bestätigungen) |
+
+Lokal verschickt die App keine echten E-Mails. Alle Mails landen in Mailpit.
 
 ---
 
@@ -158,4 +200,4 @@ Alle Inhalte der App liegen jetzt als Dateien im Ordner `content/`, getrennt von
 
 ### Nächster Schritt
 
-Weiter mit **Phase 3: Authentication & Persistence**. Dafür wird das Supabase-Projekt gebraucht (siehe Offene Punkte).
+Weiter mit **Phase 3: Authentication & Persistence**, mit der lokalen Datenbank.
