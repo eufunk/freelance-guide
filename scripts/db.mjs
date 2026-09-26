@@ -46,10 +46,22 @@ function stopKeepAlive() {
   rmSync(PID_FILE, { force: true });
 }
 
+function sleepOneSecond() {
+  spawnSync("powershell.exe", ["-NoProfile", "-Command", "Start-Sleep -Seconds 1"]);
+}
+
+function databaseContainerRunning() {
+  const result = wsl(["docker", "ps", "--filter", "name=supabase_db_", "--format", "{{.Names}}"], {
+    stdio: ["ignore", "pipe", "ignore"],
+    encoding: "utf8",
+  });
+  return result.status === 0 && result.stdout.includes("supabase_db_");
+}
+
 function waitForDocker() {
   for (let attempt = 0; attempt < 30; attempt++) {
     if (wsl(["docker", "info"], { stdio: "ignore" }).status === 0) return;
-    spawnSync("powershell.exe", ["-NoProfile", "-Command", "Start-Sleep -Seconds 1"]);
+    sleepOneSecond();
   }
   console.error(`Docker in WSL (${DISTRO}) is not responding. See README → Local database.`);
   process.exit(1);
@@ -61,6 +73,19 @@ switch (command) {
   case "start": {
     startKeepAlive();
     waitForDocker();
+    // Containers still running (e.g. WSL just restarted them after the keep-alive
+    // session was lost): wait until they are ready instead of starting again.
+    if (databaseContainerRunning()) {
+      for (let attempt = 0; attempt < 60; attempt++) {
+        if (wsl(["supabase", "status"], { stdio: "ignore" }).status === 0) {
+          console.log("Supabase is already running.");
+          process.exit(0);
+        }
+        sleepOneSecond();
+      }
+      console.error("Supabase containers are running but not ready. Try: npm run db:stop");
+      process.exit(1);
+    }
     const result = wsl(["supabase", "start"]);
     if (result.status !== 0) stopKeepAlive();
     process.exit(result.status ?? 1);

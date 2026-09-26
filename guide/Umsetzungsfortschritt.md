@@ -10,8 +10,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | 2     | Content Architecture              | ✅ Fertig     | 24.09.2026    |
 | 3     | Authentication & Persistence      | ✅ Fertig     | 24.09.2026    |
 | 4     | Product Structure & Legal Pages   | ✅ Fertig     | 24.09.2026    |
-| 5     | Onboarding                        | ⏳ Als Nächstes |               |
-| 6     | Roadmap & Task System             | Offen         |               |
+| 5     | Onboarding                        | ✅ Fertig     | 26.09.2026    |
+| 6     | Roadmap & Task System             | ⏳ Als Nächstes |               |
 | 7     | Dashboard                         | Offen         |               |
 | 8     | Tools                             | Offen         |               |
 | 9     | Templates                         | Offen         |               |
@@ -302,3 +302,46 @@ Weiter mit **Phase 4: Product Structure & Legal Pages**.
 ### Nächster Schritt
 
 Weiter mit **Phase 5: Onboarding**.
+
+---
+
+## Phase 5 – Onboarding
+
+**Status:** fertig am 26.09.2026, auf `main` gemergt.
+
+Neue Nutzer beantworten nach der ersten Anmeldung ein paar Fragen. Daraus berechnet der Guide ihren persönlichen Startpunkt in der Roadmap.
+
+### Testergebnisse
+
+- 109 Unit-Tests sind grün (davon 24 neu für das Onboarding).
+- 24 Datenbanktests sind grün.
+- 56 End-to-End-Tests sind grün, auf Handy und Desktop (davon 14 neu).
+- Datenbank direkt geprüft: Ein Durchlauf mit dem Ziel „erster Kunde“, Portfolio und abgewählter Stufe 3 speichert genau die 10 Tasks der Stufen 1, 2 und 4. Wird das Onboarding danach mit dem Ziel „Freelancer werden“ wiederholt, sind diese Häkchen wieder entfernt.
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+
+### Was jetzt steht
+
+- **Fünf Schritte** mit Fortschrittsanzeige:
+  1. Über dich: Name und Land. Bei einem anderen Land als Deutschland erscheint ein Hinweis, dass sich Steuern, Anmeldung und Versicherung auf Deutschland beziehen.
+  2. Dein IT-Profil: Haupt-Skill (Freitext mit Vorschlägen), weitere Skills, Jahre Berufserfahrung, Portfolio (Ja/Nein), Freelance-Erfahrung (Ja/Nein)
+  3. Dein Ziel: eines der drei Ziele aus der ToDo-Liste
+  4. Deine Zeit: Stunden pro Woche und gewünschter Starttermin (optional)
+  5. Dein Startpunkt: die vorgeschlagenen, bereits erledigten Stufen zum Abhaken und der daraus folgende Startpunkt
+- **Prüfung pro Schritt:** „Weiter“ geht erst, wenn der Schritt vollständig ist. Fehlermeldungen stehen direkt am Feld.
+- **Startpunkt-Regeln** wie in der ToDo-Liste (Phase 5). Vorgeschlagene Stufen lassen sich abwählen, der Startpunkt passt sich sofort an.
+- **Schutz vor Manipulation:** Als erledigt gespeichert werden nur Stufen, die die Regeln tatsächlich vorschlagen.
+- **Neue Nutzer** werden vom Dashboard automatisch ins Onboarding geleitet. Danach begrüßt das Dashboard sie mit Namen.
+- **Angaben ändern:** Über „Profil“ lässt sich das Onboarding wiederholen, die bisherigen Antworten sind vorausgefüllt. Selbst abgehakte Aufgaben bleiben erhalten, nur die Häkchen aus dem Onboarding werden neu berechnet.
+
+### Abweichungen vom Plan
+
+- **Kein separates Erfahrungslevel:** Gefragt werden nur die Jahre Berufserfahrung (Entscheidung vom 26.09.2026). Die ungenutzte Datenbank-Spalte `experience_level` wurde entfernt.
+
+### Gefundene und behobene Fehler
+
+- **Übersicht wurde übersprungen:** Beim Klick auf „Weiter“ im vierten Schritt wurde das Formular sofort abgeschickt, ohne dass die Übersicht mit dem Startpunkt erschien. Ursache: React hatte den geklickten Button noch während des Klicks in den Absende-Button umgewandelt. Gefunden hat das der End-to-End-Test.
+- **Datenbank-Start:** `npm run db:start` hat den Prozess beendet, der WSL wachhält, wenn die Datenbank gerade noch hochfuhr. Dann schaltete WSL die Datenbank kurz darauf wieder ab. Das Skript wartet jetzt, bis die laufende Datenbank bereit ist.
+
+### Nächster Schritt
+
+Weiter mit **Phase 6: Roadmap & Task System**.
