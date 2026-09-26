@@ -61,11 +61,3 @@ export function planOnboardingProgress(
   }
   return { complete, reset };
 }
-
-/** The first stage with an open task, or undefined if everything is done. */
-export function entryStage<S extends StageRef>(
-  roadmap: S[],
-  completedTaskIds: ReadonlySet<string>,
-): S | undefined {
-  return roadmap.find((stage) => stage.tasks.some((task) => !completedTaskIds.has(task.id)));
-}

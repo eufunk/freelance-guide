@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { OnboardingRules } from "@/lib/content/schema";
 
-import { entryStage, planOnboardingProgress, proposeDoneStages } from "./starting-point";
+import { planOnboardingProgress, proposeDoneStages } from "./starting-point";
 
 const roadmap = [
   { id: "skills", tasks: [{ id: "s1" }, { id: "s2" }] },
@@ -93,21 +93,5 @@ describe("planOnboardingProgress", () => {
       complete: [],
       reset: ["s1", "s2"],
     });
-  });
-});
-
-describe("entryStage", () => {
-  it("is the first stage with an open task", () => {
-    expect(entryStage(roadmap, new Set(["s1", "s2", "v1", "p1"]))?.id).toBe("portfolio");
-  });
-
-  it("starts at the beginning when nothing is done", () => {
-    expect(entryStage(roadmap, new Set())?.id).toBe("skills");
-  });
-
-  it("is undefined when everything is done", () => {
-    expect(entryStage(roadmap, new Set(["s1", "s2", "v1", "p1", "p2", "b1", "c1"]))).toBe(
-      undefined,
-    );
   });
 });
