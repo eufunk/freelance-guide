@@ -59,3 +59,40 @@ export async function setTaskStatus(
   });
   if (error) throw error;
 }
+
+/**
+ * Applies the task changes from onboarding (see planOnboardingProgress):
+ * completes tasks as "onboarding" and resets earlier onboarding marks.
+ */
+export async function applyOnboardingProgress(
+  plan: { complete: string[]; reset: string[] },
+  returnPath: string,
+): Promise<void> {
+  const user = await requireUser(returnPath);
+  const supabase = await createClient();
+
+  if (plan.reset.length > 0) {
+    const { error } = await supabase
+      .from("task_progress")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("source", "onboarding")
+      .in("task_id", plan.reset);
+    if (error) throw error;
+  }
+
+  if (plan.complete.length > 0) {
+    const now = new Date().toISOString();
+    const { error } = await supabase.from("task_progress").upsert(
+      plan.complete.map((taskId) => ({
+        user_id: user.id,
+        task_id: taskId,
+        status: "completed",
+        source: "onboarding",
+        started_at: now,
+        completed_at: now,
+      })),
+    );
+    if (error) throw error;
+  }
+}

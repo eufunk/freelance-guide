@@ -1,6 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
 import { confirmPathFrom, waitForEmail } from "./mailpit";
+import { completeOnboarding } from "./onboarding";
 
 // Shared steps for tests that need a user. Require the local database
 // (npm run db:start).
@@ -24,12 +25,19 @@ export async function confirmEmail(page: Page, email: string) {
   await page.goto(confirmPathFrom(html));
 }
 
-/** Registers and confirms a new user, who is then logged in. */
-export async function createLoggedInUser(page: Page) {
+/** Where new users land after confirming their email: the dashboard sends them to onboarding. */
+export const NEW_USER_START = "/onboarding";
+
+/**
+ * Registers and confirms a new user, who is then logged in. With `onboarded`,
+ * the user also completes the onboarding and ends on the dashboard.
+ */
+export async function createLoggedInUser(page: Page, { onboarded = true } = {}) {
   const email = uniqueEmail();
   await register(page, email);
   await confirmEmail(page, email);
-  await expect(page).toHaveURL("/dashboard");
+  await expect(page).toHaveURL(NEW_USER_START);
+  if (onboarded) await completeOnboarding(page);
   return email;
 }
 

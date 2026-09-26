@@ -64,7 +64,6 @@ export type Database = {
           country: string | null
           created_at: string
           desired_start_date: string | null
-          experience_level: string | null
           goal: string | null
           has_freelance_experience: boolean | null
           has_portfolio: boolean | null
@@ -81,7 +80,6 @@ export type Database = {
           country?: string | null
           created_at?: string
           desired_start_date?: string | null
-          experience_level?: string | null
           goal?: string | null
           has_freelance_experience?: boolean | null
           has_portfolio?: boolean | null
@@ -98,7 +96,6 @@ export type Database = {
           country?: string | null
           created_at?: string
           desired_start_date?: string | null
-          experience_level?: string | null
           goal?: string | null
           has_freelance_experience?: boolean | null
           has_portfolio?: boolean | null
