@@ -2,6 +2,7 @@ import "server-only";
 
 import { requireUser } from "@/lib/auth/dal";
 import { getTask } from "@/lib/content";
+import type { ProgressByTask } from "@/lib/progress/roadmap-progress";
 import {
   timestampsFor,
   type TaskProgressSource,
@@ -20,6 +21,21 @@ export async function getTaskProgress(returnPath: string): Promise<Map<string, T
   const { data, error } = await supabase.from("task_progress").select("*").eq("user_id", user.id);
   if (error) throw error;
   return new Map(data.map((row) => [row.task_id, row]));
+}
+
+/** The current user's progress in the shape the roadmap logic uses. */
+export async function getProgressByTask(returnPath: string): Promise<ProgressByTask> {
+  const rows = await getTaskProgress(returnPath);
+  return new Map(
+    [...rows].map(([taskId, row]) => [
+      taskId,
+      {
+        status: row.status as TaskStatus,
+        startedAt: row.started_at,
+        completedAt: row.completed_at,
+      },
+    ]),
+  );
 }
 
 /** Saves the status of one task for the current user. */

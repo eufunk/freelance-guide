@@ -11,8 +11,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | 3     | Authentication & Persistence      | ✅ Fertig     | 24.09.2026    |
 | 4     | Product Structure & Legal Pages   | ✅ Fertig     | 24.09.2026    |
 | 5     | Onboarding                        | ✅ Fertig     | 26.09.2026    |
-| 6     | Roadmap & Task System             | ⏳ Als Nächstes |               |
-| 7     | Dashboard                         | Offen         |               |
+| 6     | Roadmap & Task System             | ✅ Fertig     | 26.09.2026    |
+| 7     | Dashboard                         | ⏳ Als Nächstes |               |
 | 8     | Tools                             | Offen         |               |
 | 9     | Templates                         | Offen         |               |
 | 10    | German Freelancer Basics          | Offen         |               |
@@ -345,3 +345,35 @@ Neue Nutzer beantworten nach der ersten Anmeldung ein paar Fragen. Daraus berech
 ### Nächster Schritt
 
 Weiter mit **Phase 6: Roadmap & Task System**.
+
+---
+
+## Phase 6 – Roadmap & Task System
+
+**Status:** fertig am 26.09.2026, auf `main` gemergt.
+
+Die Roadmap zeigt jetzt alle 15 Stufen mit dem persönlichen Fortschritt. Aufgaben lassen sich starten, abschließen und wieder öffnen.
+
+### Testergebnisse
+
+- 130 Unit-Tests sind grün (davon 21 neu).
+- 24 Datenbanktests sind grün.
+- 68 End-to-End-Tests sind grün, auf Handy und Desktop (davon 12 neu), in drei Läufen hintereinander. In einem früheren Lauf ist ein Test mit einer URL-Prüfung einmal fehlgeschlagen; das ließ sich nicht wiederholen. Falls er erneut auftaucht, wird er genauer untersucht.
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+
+### Was jetzt steht
+
+- **Roadmap-Übersicht:** Gesamtfortschritt („19 % geschafft · 9 von 48 Aufgaben erledigt“) und alle 15 Stufen. Erledigte Stufen haben einen grünen Haken, die aktuelle Stufe ist hervorgehoben und zeigt als einzige ihre Kurzbeschreibung (schrittweise Information statt Textwüste).
+- **Stufen-Seite:** Erklärung, „Warum das wichtig ist“, alle Aufgaben mit Beschreibung, geschätzter Dauer und Status (Offen / In Arbeit / Erledigt am …), passende Tools und Links zur vorherigen und nächsten Stufe. Ist eine Stufe komplett, erscheint „Stufe erledigt – stark!“ mit einem Button zur nächsten Stufe.
+- **Aufgaben:** „Starten“, „Erledigt“ und „Wieder öffnen“. Mehrere Aufgaben können gleichzeitig in Arbeit sein. Auch Häkchen aus dem Onboarding lassen sich wieder öffnen; die Aufgabe gilt danach als eigene.
+- **Berechnete Werte** wie in der ToDo-Liste (reine Funktionen, nichts davon wird gespeichert): Stufe erledigt, aktuelle Stufe, Fortschritt in Prozent, nächste Aufgabe und nächste empfohlene Aufgabe. Die letzten beiden nutzt das Dashboard in Phase 7.
+- **Unbekannte Stufen** zeigen eine eigene Seite „Stufe nicht gefunden“.
+
+### Abweichungen vom Plan
+
+- **Keine Vorlagen und Links an den Stufen:** Die Stellen dafür sind vorbereitet, die Inhalte folgen mit den Vorlagen (Phase 9). Externe Links gibt es bewusst noch keine (siehe Phase 2).
+- **Roadmap ohne Onboarding nutzbar:** Anders als das Dashboard leitet die Roadmap nicht ins Onboarding um. Wer das Onboarding überspringt, startet einfach bei Stufe 1.
+
+### Nächster Schritt
+
+Weiter mit **Phase 7: Dashboard**.

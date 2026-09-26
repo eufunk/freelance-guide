@@ -19,7 +19,8 @@ import {
   type OnboardingField,
   type OnboardingInput,
 } from "@/lib/onboarding/schema";
-import { entryStage, proposeDoneStages } from "@/lib/onboarding/starting-point";
+import { proposeDoneStages } from "@/lib/onboarding/starting-point";
+import { currentStage } from "@/lib/progress/roadmap-progress";
 
 export type OnboardingStage = { id: string; title: string; order: number; tasks: { id: string }[] };
 
@@ -116,7 +117,7 @@ export function OnboardingForm({
       for (const task of stage.tasks) completedTaskIds.add(task.id);
     }
   }
-  const start = entryStage(stages, completedTaskIds);
+  const start = currentStage(stages, completedTaskIds);
   const currentStep = onboardingSteps[step];
 
   return (
