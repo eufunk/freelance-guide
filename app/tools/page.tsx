@@ -6,7 +6,6 @@ import { getTools } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Tools" };
 
-// The tools themselves are built in Phase 8; until then they are listed without links.
 export default function ToolsPage() {
   return (
     <PageContainer title="Tools" description="Rechner und Checks für deine Planung.">
@@ -16,7 +15,7 @@ export default function ToolsPage() {
             key={tool.id}
             title={tool.title}
             description={tool.description}
-            badge="Bald verfügbar"
+            href={tool.href}
           />
         ))}
       </div>

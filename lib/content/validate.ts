@@ -3,12 +3,14 @@ import {
   legalArticleSchema,
   onboardingFlags,
   onboardingRulesSchema,
+  readinessItemSchema,
   roadmapSchema,
   templatePlaceholders,
   templateSchema,
   toolSchema,
   type LegalArticle,
   type OnboardingRules,
+  type ReadinessItem,
   type Stage,
   type Template,
   type Tool,
@@ -21,6 +23,7 @@ export type RawContent = {
   templates: unknown;
   legalArticles: unknown;
   onboardingRules: unknown;
+  readinessChecklist: unknown;
 };
 
 export type Content = {
@@ -29,6 +32,7 @@ export type Content = {
   templates: Template[];
   legalArticles: LegalArticle[];
   onboardingRules: OnboardingRules;
+  readinessChecklist: ReadinessItem[];
 };
 
 export class ContentError extends Error {
@@ -74,6 +78,7 @@ export function loadContent(raw: RawContent, today: string): Content {
   const templates = z.array(templateSchema).safeParse(raw.templates);
   const legalArticles = z.array(legalArticleSchema).safeParse(raw.legalArticles);
   const onboardingRules = onboardingRulesSchema.safeParse(raw.onboardingRules);
+  const readinessChecklist = z.array(readinessItemSchema).safeParse(raw.readinessChecklist);
 
   if (!roadmap.success) problems.push(...schemaProblems("roadmap", roadmap.error));
   if (!tools.success) problems.push(...schemaProblems("tools", tools.error));
@@ -82,13 +87,16 @@ export function loadContent(raw: RawContent, today: string): Content {
     problems.push(...schemaProblems("legalArticles", legalArticles.error));
   if (!onboardingRules.success)
     problems.push(...schemaProblems("onboardingRules", onboardingRules.error));
+  if (!readinessChecklist.success)
+    problems.push(...schemaProblems("readinessChecklist", readinessChecklist.error));
 
   if (
     !roadmap.success ||
     !tools.success ||
     !templates.success ||
     !legalArticles.success ||
-    !onboardingRules.success
+    !onboardingRules.success ||
+    !readinessChecklist.success
   ) {
     throw new ContentError(problems);
   }
@@ -108,6 +116,7 @@ export function loadContent(raw: RawContent, today: string): Content {
     ["tool", tools.data.map((t) => t.id)],
     ["template", templates.data.map((t) => t.id)],
     ["legal article", legalArticles.data.map((a) => a.id)],
+    ["readiness item", readinessChecklist.data.map((item) => item.id)],
   ] as const) {
     for (const dupe of duplicates([...ids])) problems.push(`Duplicate ${label} ID "${dupe}"`);
   }
@@ -135,6 +144,18 @@ export function loadContent(raw: RawContent, today: string): Content {
     for (const stageId of ids) {
       if (!stageIds.has(stageId))
         problems.push(`Onboarding rule for ${key} refers to unknown stage "${stageId}"`);
+    }
+  }
+
+  const taskIds = new Set(tasks.map((task) => task.id));
+  for (const item of readinessChecklist.data) {
+    for (const stageId of item.stageIds) {
+      if (!stageIds.has(stageId))
+        problems.push(`Readiness item "${item.id}" refers to unknown stage "${stageId}"`);
+    }
+    for (const taskId of item.taskIds) {
+      if (!taskIds.has(taskId))
+        problems.push(`Readiness item "${item.id}" refers to unknown task "${taskId}"`);
     }
   }
 
@@ -169,6 +190,7 @@ export function loadContent(raw: RawContent, today: string): Content {
     templates: templates.data,
     legalArticles: legalArticles.data,
     onboardingRules: rules,
+    readinessChecklist: readinessChecklist.data,
   };
 }
 

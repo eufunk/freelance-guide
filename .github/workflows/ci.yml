@@ -9,8 +9,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -22,9 +22,9 @@ jobs:
 
       # Local Supabase stack for the database and E2E tests. On Linux, Docker
       # runs natively, so the CLI is called directly instead of through WSL.
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@v3
         with:
-          version: 2.117.0
+          version: 2.118.0
       - run: supabase start
       - run: supabase test db
       - run: cp .env.example .env.local

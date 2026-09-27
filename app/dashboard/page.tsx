@@ -169,13 +169,12 @@ export default async function DashboardPage() {
         {(tools.length > 0 || templates.length > 0) && (
           <Section title="Passend zu deiner Stufe">
             <div className="grid gap-3">
-              {/* Tools are built in Phase 8; until then they are listed without links. */}
               {tools.map((tool) => (
                 <InfoCard
                   key={tool.id}
                   title={tool.title}
                   description={tool.description}
-                  badge="Bald verfügbar"
+                  href={tool.href}
                 />
               ))}
               {templates.map((template) => (
