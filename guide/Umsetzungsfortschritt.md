@@ -12,8 +12,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | 4     | Product Structure & Legal Pages   | ✅ Fertig     | 24.09.2026    |
 | 5     | Onboarding                        | ✅ Fertig     | 26.09.2026    |
 | 6     | Roadmap & Task System             | ✅ Fertig     | 26.09.2026    |
-| 7     | Dashboard                         | ⏳ Als Nächstes |               |
-| 8     | Tools                             | Offen         |               |
+| 7     | Dashboard                         | ✅ Fertig     | 27.09.2026    |
+| 8     | Tools                             | ⏳ Als Nächstes |               |
 | 9     | Templates                         | Offen         |               |
 | 10    | German Freelancer Basics          | Offen         |               |
 | 11    | Privacy & Product Metric Tracking | Offen         |               |
@@ -29,6 +29,7 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
 | Impressum und Datenschutz fertigstellen | Eugenia | Bevor die App online geht | Ja |
 | Projekt aus OneDrive lösen  | Eugenia     | Nur falls der Rechner langsam wird    | Nein     |
+| Seltener Serverfehler nach der Anmeldung | Claude | Sobald er erneut auftritt | Ja |
 
 ### Roadmap-Texte durchsehen
 
@@ -48,6 +49,16 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 **Warum:** Ohne vollständiges Impressum und korrekte Datenschutzerklärung darf die App nicht öffentlich betrieben werden. Die Datenschutzerklärung ist ein Entwurf von Claude und keine Rechtsberatung.
 
 **Absicherung:** Ein automatischer Check bricht den Build ab, sobald die App für eine öffentliche Adresse gebaut wird und noch Platzhalter übrig sind oder die Datenschutzerklärung noch als Entwurf markiert ist.
+
+### Offener Fehler: seltener Serverfehler direkt nach der Anmeldung
+
+- [ ] Ursache finden, sobald der Fehler erneut auftritt.
+
+**Was passiert:** In zwei von rund 20 Gesamtläufen der End-to-End-Tests zeigte das Dashboard direkt nach der Bestätigung der E-Mail-Adresse die Fehlerseite „Etwas ist schiefgelaufen“ (Fehler-ID `2497239318@E394`). Laut dem Next.js-Code bedeutet `E394`, dass beim Rendern etwas geworfen wurde, das kein echtes Fehlerobjekt ist. Unsere Datenbankzugriffe werfen echte Fehlerobjekte; sie scheiden damit wahrscheinlich aus.
+
+**Bisherige Suche (27.09.2026):** 6 weitere Gesamtläufe und 48 gezielte Wiederholungen der betroffenen Tests – alle ohne Fehler. Die Server-Protokolle zeigten keine Auffälligkeit.
+
+**Vorkehrung:** Die Testläufe geben jetzt die komplette Server-Ausgabe mit aus, lokal und auf GitHub. Tritt der Fehler wieder auf, steht die eigentliche Meldung im Protokoll. Auf GitHub wiederholt Playwright fehlgeschlagene Tests bis zu zweimal und meldet sie dann als „flaky“, der Lauf bleibt aber grün.
 
 ### Supabase-Cloud-Projekt anlegen
 
@@ -377,3 +388,36 @@ Die Roadmap zeigt jetzt alle 15 Stufen mit dem persönlichen Fortschritt. Aufgab
 ### Nächster Schritt
 
 Weiter mit **Phase 7: Dashboard**.
+
+---
+
+## Phase 7 – Dashboard
+
+**Status:** fertig am 27.09.2026, auf `main` gemergt.
+
+Das Dashboard beantwortet die Frage „Was soll ich als Nächstes tun?“.
+
+### Testergebnisse
+
+- 137 Unit-Tests sind grün (davon 7 neu).
+- 24 Datenbanktests sind grün.
+- 78 End-to-End-Tests sind grün, auf Handy und Desktop (davon 10 neu), in mehreren Läufen. Einmal trat dabei der seltene Serverfehler auf, siehe „Offene Punkte“.
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+
+### Was jetzt steht
+
+- **Nächste Aufgabe als Hauptaktion:** Titel, Beschreibung, Dauer und der Button „Weiter: …“. Er springt direkt zur Aufgabe auf der Stufen-Seite. Ist eine Aufgabe in Arbeit, steht sie hier („Du arbeitest gerade an …“), auch wenn sie aus einer späteren Stufe stammt.
+- **Dein Fortschritt:** Prozent, erledigte Aufgaben, aktuelle Stufe und ein Link zur Roadmap.
+- **Danach:** die nächste empfohlene Aufgabe.
+- **Zuletzt erledigt:** die letzten 5 selbst erledigten Aufgaben mit Datum. Häkchen aus dem Onboarding erscheinen hier bewusst nicht, weil der Nutzer sie nicht gerade erst erledigt hat.
+- **Passend zu deiner Stufe:** Tools (und später Vorlagen) der aktuellen Stufe.
+- **Alles erledigt:** Glückwunsch und ein Link zur letzten Stufe „Verbessern und wiederholen“.
+- **Barrierefreiheit:** Die Abschnitte sind mit ihren Überschriften verknüpft, sodass Screenreader sie als Bereiche ansagen.
+
+### Hinweise
+
+- Der Zustand „Alles erledigt“ ist durch Unit-Tests abgedeckt, aber nicht durch einen End-to-End-Test: Dafür müsste ein Test alle 48 Aufgaben abhaken.
+
+### Nächster Schritt
+
+Weiter mit **Phase 8: Tools** (Stundensatz-Rechner, Projektpreis-Rechner, Startklar-Check).

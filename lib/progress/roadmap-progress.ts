@@ -1,4 +1,4 @@
-import type { TaskStatus } from "./task-progress";
+import type { TaskProgressSource, TaskStatus } from "./task-progress";
 
 // Derived roadmap values (Phase 6 in guide/ToDo.docx). Pure functions: nothing
 // here is stored; everything follows from the content and the task progress.
@@ -10,6 +10,8 @@ export type TaskProgress = {
   status: TaskStatus;
   startedAt: string | null;
   completedAt: string | null;
+  /** "onboarding" if the onboarding marked the task as already done. */
+  source: TaskProgressSource;
 };
 
 /** Progress by task ID. Tasks without an entry are "todo". */
@@ -92,4 +94,25 @@ export function nextRecommendedTask<T extends TaskRef>(
   const tasks = roadmap.flatMap((stage) => stage.tasks);
   const index = tasks.findIndex((task) => task.id === current.id);
   return tasks.slice(index + 1).find((task) => statusOf(task.id, progress) === "todo");
+}
+
+/**
+ * Tasks the user completed themselves, newest first. Tasks marked as done by the
+ * onboarding are left out: the user didn't just do them.
+ */
+export function recentlyCompleted<T extends TaskRef>(
+  roadmap: { tasks: T[] }[],
+  progress: ProgressByTask,
+  limit = 5,
+): { task: T; completedAt: string }[] {
+  return roadmap
+    .flatMap((stage) => stage.tasks)
+    .flatMap((task) => {
+      const row = progress.get(task.id);
+      return row?.status === "completed" && row.source === "user" && row.completedAt
+        ? [{ task, completedAt: row.completedAt }]
+        : [];
+    })
+    .sort((a, b) => b.completedAt.localeCompare(a.completedAt))
+    .slice(0, limit);
 }

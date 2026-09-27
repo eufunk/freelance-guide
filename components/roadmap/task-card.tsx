@@ -37,8 +37,10 @@ export function TaskCard({ task, progress }: { task: Task; progress: TaskProgres
 
   return (
     <li
+      // Target of the dashboard link; scroll-margin keeps it clear of the sticky header.
+      id={`aufgabe-${task.id}`}
       className={cn(
-        "space-y-3 rounded-xl border p-4",
+        "scroll-mt-20 space-y-3 rounded-xl border p-4",
         status === "completed" && "bg-muted/40",
         status === "in_progress" && "border-foreground/40",
       )}

@@ -33,6 +33,7 @@ export async function getProgressByTask(returnPath: string): Promise<ProgressByT
         status: row.status as TaskStatus,
         startedAt: row.started_at,
         completedAt: row.completed_at,
+        source: row.source as TaskProgressSource,
       },
     ]),
   );
