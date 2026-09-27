@@ -130,5 +130,14 @@
   }
   html {
     @apply font-sans;
+    /* Keep elements scrolled into view (focus, anchors) clear of the sticky header
+       and, on mobile, of the fixed bottom navigation. */
+    scroll-padding-top: 4.5rem;
+    scroll-padding-bottom: 5.5rem;
+  }
+  @media (width >= 48rem) {
+    html {
+      scroll-padding-bottom: 1rem;
+    }
   }
 }
