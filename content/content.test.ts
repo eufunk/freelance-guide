@@ -24,6 +24,24 @@ describe("content", () => {
     ]);
   });
 
+  it("has the 8 planned templates", () => {
+    expect(content.templates.map((template) => template.id)).toEqual([
+      "freelancer-profile",
+      "portfolio-structure",
+      "client-outreach",
+      "follow-up-message",
+      "project-brief",
+      "project-proposal",
+      "invoice-example",
+      "testimonial-request",
+    ]);
+  });
+
+  it("links every template from at least one stage", () => {
+    const linked = new Set(content.roadmap.flatMap((stage) => stage.relatedTemplateIds));
+    expect(content.templates.filter((template) => !linked.has(template.id))).toEqual([]);
+  });
+
   // User progress in the database refers to these IDs. If this test fails
   // because an ID was renamed or removed, add a new ID instead and keep the old
   // one, or plan a data migration. Only update the snapshot for added IDs.

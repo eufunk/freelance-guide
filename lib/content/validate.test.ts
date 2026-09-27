@@ -42,6 +42,8 @@ function validContent(): RawContent {
         title: "Anfrage",
         category: "Akquise",
         kind: "template",
+        description: "Kurz",
+        tips: ["Tipp"],
         body: "Hallo, ich bin {{name}} und arbeite mit {{ mainSkill }}.",
       },
     ],

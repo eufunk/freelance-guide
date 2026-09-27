@@ -7,6 +7,7 @@ import { useId } from "react";
 import { InfoCard } from "@/components/layout/info-card";
 import { PageContainer } from "@/components/layout/page-container";
 import { ProgressBar } from "@/components/roadmap/progress-bar";
+import { templateKindLabels } from "@/components/templates/template-labels";
 import { buttonVariants } from "@/components/ui/button";
 import { getRoadmap, getStage, getTemplate, getTool } from "@/lib/content";
 import type { Stage, Task, ToolId } from "@/lib/content/schema";
@@ -180,9 +181,10 @@ export default async function DashboardPage() {
               {templates.map((template) => (
                 <InfoCard
                   key={template.id}
-                  href="/wissen/vorlagen"
+                  href={`/wissen/vorlagen/${template.id}`}
                   title={template.title}
-                  description={template.category}
+                  description={template.description}
+                  badge={templateKindLabels[template.kind]}
                 />
               ))}
             </div>

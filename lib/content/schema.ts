@@ -52,6 +52,7 @@ export const toolSchema = z.strictObject({
 });
 
 export const templateKinds = ["example", "template", "legal-sample"] as const;
+export type TemplateKind = (typeof templateKinds)[number];
 
 /** Placeholders a template body may use, e.g. {{name}}. Filled from the profile. */
 export const templatePlaceholders = [
@@ -61,6 +62,7 @@ export const templatePlaceholders = [
   "yearsOfExperience",
   "hourlyRate",
 ] as const;
+export type TemplatePlaceholder = (typeof templatePlaceholders)[number];
 
 export const templateSchema = z
   .strictObject({
@@ -68,6 +70,10 @@ export const templateSchema = z
     title: text,
     category: text,
     kind: z.enum(templateKinds),
+    /** One sentence for overview cards. */
+    description: text,
+    /** Short hints shown above the text: how to use the template. */
+    tips: z.array(text).min(1),
     body: text,
     disclaimer: text.optional(),
   })
