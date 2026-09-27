@@ -1,10 +1,10 @@
 # Projektstand und Übergabe
 
-**Stand:** 27.09.2026 · Phase 10 auf `main` gemergt
+**Stand:** 27.09.2026 · Phase 11 fertig, alle Phasen umgesetzt
 
 Diese Datei fasst alles zusammen, was man braucht, um in einem neuen Chat nahtlos weiterzuarbeiten. Einstieg für einen neuen Chat:
 
-> Lies `guide/Projektstand.md`, dann `guide/Umsetzungsfortschritt.md`, und mach mit Phase 11 weiter.
+> Lies `guide/Projektstand.md`, dann `guide/Umsetzungsfortschritt.md`, und mach mit der Vorbereitung auf den Livegang weiter.
 
 Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umsetzungsfortschritt.md), der Plan und alle Grundsatzentscheidungen in [ToDo.docx](ToDo.docx) (Abschnitte „Decisions“ und „Development Rules“).
 
@@ -28,9 +28,9 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | 8     | Tools                             | ✅ Fertig     |
 | 9     | Templates (Vorlagen)              | ✅ Fertig     |
 | 10    | German Freelancer Basics          | ✅ Fertig     |
-| 11    | Privacy & Product Metric Tracking | ⏳ Als Nächstes |
+| 11    | Privacy & Product Metric Tracking | ✅ Fertig     |
 
-**Tests aktuell:** 188 Unit-Tests, 24 Datenbanktests (pgTAP), 114 End-to-End-Tests (Playwright, Handy + Desktop). Alles grün, lokal und auf GitHub.
+**Tests aktuell:** 193 Unit-Tests, 34 Datenbanktests (pgTAP), 120 End-to-End-Tests (Playwright, Handy + Desktop). Alles grün, lokal und auf GitHub.
 
 ## 3. Was die App heute kann
 
@@ -42,6 +42,7 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 - **Vorlagen:** 8 Vorlagen unter `/wissen/vorlagen`, jede mit eigener Seite zum Bearbeiten und Kopieren im Browser (nichts wird gespeichert); Name, Skills, Erfahrung und Stundensatz werden aus dem Profil eingesetzt; an den passenden Stufen und im Dashboard verlinkt
 - **Deutschland-Grundlagen:** 9 Artikel unter `/wissen/grundlagen` mit Quellen, Prüfdatum und Hinweis „keine Rechts-/Steuerberatung“; als Entwurf markiert, bis fachlich geprüft; an den passenden Stufen verlinkt
 - **Profil:** Konto, Angaben ändern, Passwort ändern, Konto löschen (beides mit aktuellem Passwort)
+- **Nutzungsmessung:** 6 Ereignisse angemeldeter Nutzer in der eigenen Tabelle `events` (ohne Cookies und externe Dienste), Auswertung per SQL in `supabase/analysis/metrics.sql`
 - **Impressum / Datenschutz:** mit Platzhaltern bzw. als Entwurf; ein Check verhindert eine Veröffentlichung in diesem Zustand
 
 ## 4. Technik
@@ -64,7 +65,9 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | `lib/db/`                   | Datenzugriff (Profil, Task-Fortschritt, Rechner-Ergebnisse), generierte Typen                  |
 | `lib/progress/`             | Reine Fortschrittslogik (aktuelle Stufe, nächste Aufgabe, Dashboard)                           |
 | `lib/onboarding/`, `lib/tools/`, `lib/templates/` | Reine, getestete Logik für Onboarding, Rechner und Vorlagen (Platzhalter) |
-| `supabase/migrations/`      | Datenbankschema (3 Migrationen)                                                               |
+| `lib/tracking/`, `lib/db/events.ts` | Ereignisse (Namen, Eigenschaften), Server-Aktionen und Speichern |
+| `supabase/migrations/` | Datenbankschema (4 Migrationen) |
+| `supabase/analysis/` | SQL-Abfragen für die Produktkennzahlen (im SQL-Editor von Supabase Studio ausführen) |
 | `supabase/tests/database/`  | pgTAP-Tests (RLS, Constraints, Konto löschen)                                                 |
 | `e2e/`                      | Playwright-Tests; `e2e/helpers/` für Registrierung, Mailpit, Onboarding                        |
 | `scripts/db.mjs`            | Start/Stopp der lokalen Datenbank über WSL                                                    |
@@ -74,7 +77,7 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 - `profiles` (Onboarding-Antworten, `onboarding_completed_at`), `task_progress` (Status je Aufgabe, `source`: `user` oder `onboarding`), `calculator_results` (letztes Ergebnis je Rechner)
 - Row Level Security: jeder sieht nur eigene Zeilen; `anon` hat keinen Zugriff
 - Konto löschen über `delete_own_account()`; alle Daten werden per `on delete cascade` mitgelöscht
-- **Noch nicht angelegt:** Tabelle `events` (Phase 11)
+- `events` (Nutzungsereignisse): Nutzer dürfen nur eigene anlegen, aber nicht lesen, ändern oder löschen; Auswertung nur als Admin
 
 ## 5. Lokale Umgebung (Besonderheiten dieses Rechners)
 
@@ -127,6 +130,7 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | Deutschland-Grundlagen (9 Artikel) von einer Steuerberatung prüfen lassen, dann `expertReviewed: true` | Eugenia | Vor dem Livegang |
 | Deutschland-Grundlagen jährlich prüfen (Zahlen 2027, E-Rechnung, Rentenkommission)          | Claude/Eugenia | Januar 2027      |
 | Speicherdauer der Tracking-Ereignisse festlegen (Empfehlung: 12 Monate, dann löschen)       | Eugenia     | Vor dem Livegang     |
+| Verträge zur Auftragsverarbeitung mit Supabase, Hosting und E-Mail-Dienst abschließen | Eugenia | Vor dem Livegang |
 | Nutzung ohne Konto erfassen? (Empfehlung: vorerst nein; später ggf. Zähler ohne Cookie/IP)  | Eugenia     | Optional, nach Livegang |
 | Stilfrage: soll die App gendern? (bisher neutral formuliert)                                | Eugenia     | Vor der Durchsicht   |
 | Impressum ausfüllen, Datenschutzerklärung prüfen lassen (`content/legal-pages.ts`)          | Eugenia     | Vor dem Livegang     |
@@ -136,10 +140,15 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | GitHub stellt ab 19.10.2026 auf Ubuntu 26 um – ersten Lauf danach prüfen                     | Claude      | Nach dem 19.10.2026  |
 | Projekt ggf. aus OneDrive lösen (Geschwindigkeit)                                           | Eugenia     | Optional             |
 
-## 8. Nächster Schritt: Phase 11 – Datenschutz & Tracking
+## 8. Nächster Schritt: Vorbereitung auf den Livegang
 
-- **Tabelle `events`** mit den Ereignissen `onboarding_completed`, `task_started`, `task_completed`, `stage_completed`, `calculator_used`, `template_copied`
-- Auswertung per SQL (kein Analyse-Dashboard, siehe ToDo-Liste „Do NOT add“)
-- Datenschutzerklärung (`content/legal-pages.ts`) um das Tracking ergänzen
-- **Entschieden (27.09.2026):** Erfasst werden vorerst **nur angemeldete Nutzer**; Ereignisse werden mit dem Konto gelöscht. Eine feste Speicherdauer wird noch nicht umgesetzt.
-- Beide Punkte stehen mit Bewertung und Empfehlung als offene Punkte in `Umsetzungsfortschritt.md` („Speicherdauer der Tracking-Ereignisse festlegen“, „Nutzung ohne Konto erfassen“).
+Alle 11 Phasen der ToDo-Liste sind umgesetzt. Bis zum Livegang fehlen vor allem Entscheidungen und Prüfungen von Eugenia (Abschnitt 7), danach die technische Einrichtung:
+
+1. **Inhalte prüfen:** Roadmap-Texte, Vorlagen, Deutschland-Grundlagen (Steuerberatung), Rechner-Annahmen
+2. **Rechtliches:** Impressum ausfüllen, Datenschutzerklärung prüfen lassen, Speicherdauer der Ereignisse festlegen, Verträge zur Auftragsverarbeitung
+3. **Einrichtung:** Hosting (Empfehlung Vercel, Region `fra1`), Supabase-Cloud-Projekt in Frankfurt, eigener E-Mail-Versand (SMTP), Migrationen einspielen
+4. **Abnahme:** ein kompletter manueller Durchlauf auf Handy und Desktop (ToDo-Liste, „Cross-cutting Requirements“)
+
+Die Livegang-Sperre (`content/release.test.ts`) zeigt beim Build für eine öffentliche Adresse, was noch fehlt: Platzhalter in Impressum und Datenschutz, Datenschutzerklärung als Entwurf, ungeprüfte Artikel.
+
+Entschieden für das Tracking (27.09.2026): nur angemeldete Nutzer, Löschung mit dem Konto; Speicherdauer und Erfassung ohne Konto stehen mit Bewertung und Empfehlung als offene Punkte in `Umsetzungsfortschritt.md`.

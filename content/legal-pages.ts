@@ -27,7 +27,7 @@ export const privacyPolicy = {
    * and completed before the site goes live. Then set to false.
    */
   draft: true,
-  lastUpdated: "2026-09-24",
+  lastUpdated: "2026-09-27",
   sections: [
     {
       heading: "Überblick",
@@ -47,6 +47,7 @@ export const privacyPolicy = {
         "Angaben aus dem Onboarding: Name, Land, Erfahrung, Skills, ob du ein Portfolio oder Freelance-Erfahrung hast, dein Ziel, deine verfügbaren Stunden pro Woche und dein gewünschter Starttermin.",
         "Dein Fortschritt: welche Aufgaben du begonnen oder erledigt hast und wann.",
         "Rechner-Ergebnisse: die Eingaben und das Ergebnis deiner letzten Berechnung, wenn du sie speicherst.",
+        "Nutzungsereignisse, wenn du angemeldet bist: dass du das Onboarding abgeschlossen, eine Aufgabe begonnen oder erledigt, eine Stufe abgeschlossen, einen Rechner genutzt oder eine Vorlage kopiert hast, jeweils mit Zeitpunkt und der Kennung der Aufgabe, Stufe, des Rechners oder der Vorlage. Deine Eingaben im Rechner und deine Texte in den Vorlagen speichern wir dabei nicht.",
         "Technische Daten: Beim Aufruf der Seiten verarbeitet der Hosting-Anbieter technisch notwendige Daten wie IP-Adresse, Zeitpunkt und aufgerufene Adresse (Server-Logfiles).",
       ],
     },
@@ -56,6 +57,7 @@ export const privacyPolicy = {
         "Dein Konto und die Funktionen des Guides (Fortschritt speichern, persönlicher Startpunkt, Empfehlungen): Art. 6 Abs. 1 lit. b DSGVO, weil wir die Daten für die Nutzung des Guides brauchen.",
         "E-Mails zur Bestätigung deiner Adresse und zum Zurücksetzen deines Passworts: Art. 6 Abs. 1 lit. b DSGVO.",
         "Sicherer und stabiler Betrieb (Server-Logfiles, Schutz vor Missbrauch): Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse ist ein sicherer Betrieb der Website.",
+        "Nutzungsereignisse, um den Guide zu verbessern (zum Beispiel: Wie viele Nutzer erledigen in der ersten Woche eine Aufgabe? Welche Vorlagen werden genutzt?): Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse ist, zu verstehen, ob der Guide beim Einstieg in die Selbstständigkeit hilft. Wir werten die Ereignisse nur in unserer eigenen Datenbank aus, ohne externe Analyse-Dienste und ohne Cookies. Besucher ohne Konto werden nicht erfasst. Du kannst dieser Verarbeitung jederzeit widersprechen (Art. 21 DSGVO), eine kurze E-Mail genügt.",
       ],
       paragraphs: [
         "Wir verwenden deine Daten nicht für Werbung und geben sie nicht zu Werbezwecken an Dritte weiter.",
@@ -89,6 +91,7 @@ export const privacyPolicy = {
       paragraphs: [
         "Wir speichern deine Daten, solange dein Konto besteht. Du kannst dein Konto jederzeit unter „Profil“ löschen. Dabei werden alle deine Daten gelöscht; aus Sicherungskopien werden sie nach spätestens [[PLATZHALTER: Anzahl]] Tagen entfernt.",
         "Server-Logfiles werden nach [[PLATZHALTER: Anzahl]] Tagen gelöscht.",
+        "Nutzungsereignisse werden mit deinem Konto gelöscht, spätestens aber nach [[PLATZHALTER: Speicherdauer der Nutzungsereignisse festlegen, Empfehlung 12 Monate]].",
       ],
     },
     {

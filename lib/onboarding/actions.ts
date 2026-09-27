@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { getOnboardingRules, getRoadmap } from "@/lib/content";
-import { updateProfile } from "@/lib/db/profile";
+import { recordEvent } from "@/lib/db/events";
+import { getProfile, updateProfile } from "@/lib/db/profile";
 import { applyOnboardingProgress, getTaskProgress } from "@/lib/db/task-progress";
 
 import type { OnboardingFormState } from "./form-state";
@@ -27,6 +28,7 @@ export async function saveOnboarding(
   const roadmap = getRoadmap();
   const proposed = new Set(proposeDoneStages(answers, getOnboardingRules(), roadmap));
   const confirmed = answers.confirmedStageIds.filter((id) => proposed.has(id));
+  const repeat = (await getProfile(RETURN_PATH)).onboarding_completed_at !== null;
 
   await updateProfile(
     {
@@ -56,6 +58,7 @@ export async function saveOnboarding(
     })),
   );
   await applyOnboardingProgress(plan, RETURN_PATH);
+  await recordEvent("onboarding_completed", { repeat });
 
   redirect("/dashboard");
 }

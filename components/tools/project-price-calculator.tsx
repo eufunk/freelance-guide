@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { NumberField } from "@/components/tools/number-field";
+import { useRecordCalculatorUse } from "@/components/tools/use-record-calculator-use";
 import { formatEuro } from "@/lib/format";
 import { parseAndCalculateProjectPrice, type ProjectPriceField } from "@/lib/tools/project-price";
 
@@ -14,6 +15,7 @@ export function ProjectPriceCalculator({ initialValues }: { initialValues: Value
   const [touched, setTouched] = useState<Partial<Record<ProjectPriceField, boolean>>>({});
 
   const parsed = parseAndCalculateProjectPrice(values);
+  useRecordCalculatorUse("project-price", parsed.ok && Object.keys(touched).length > 0);
   const errorOf = (name: ProjectPriceField) =>
     !parsed.ok && touched[name] ? parsed.errors[name] : undefined;
 

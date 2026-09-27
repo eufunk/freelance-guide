@@ -112,6 +112,19 @@ switch (command) {
     });
     if (result.status !== 0) process.exit(result.status ?? 1);
     writeFileSync(TYPES_FILE, result.stdout);
+    // The CLI output is unformatted. The file is in .prettierignore (so format checks
+    // never fight the generator), hence the empty ignore path here.
+    spawnSync(
+      process.execPath,
+      [
+        "node_modules/prettier/bin/prettier.cjs",
+        "--ignore-path=",
+        "--no-semi",
+        "--write",
+        TYPES_FILE,
+      ],
+      { stdio: "inherit" },
+    );
     console.log(`Wrote ${TYPES_FILE}`);
     break;
   }

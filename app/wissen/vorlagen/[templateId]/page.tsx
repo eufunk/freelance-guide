@@ -121,7 +121,10 @@ export default async function TemplatePage({ params }: PageProps<"/wissen/vorlag
           </p>
         )}
 
-        <TemplateEditor initialText={fillPlaceholders(template.body, values)} />
+        <TemplateEditor
+          templateId={template.id}
+          initialText={fillPlaceholders(template.body, values)}
+        />
 
         <p className="text-sm text-muted-foreground">
           Dein Text wird nicht gespeichert. Kopiere ihn, bevor du die Seite verlässt.

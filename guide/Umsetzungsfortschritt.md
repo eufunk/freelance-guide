@@ -16,7 +16,7 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | 8     | Tools                             | ✅ Fertig     | 27.09.2026    |
 | 9     | Templates                         | ✅ Fertig     | 27.09.2026    |
 | 10    | German Freelancer Basics          | ✅ Fertig     | 27.09.2026    |
-| 11    | Privacy & Product Metric Tracking | ⏳ Als Nächstes |               |
+| 11    | Privacy & Product Metric Tracking | ✅ Fertig     | 27.09.2026    |
 
 ## Offene Punkte
 
@@ -28,6 +28,7 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 | Vorlagen-Texte durchsehen   | Eugenia     | Vor dem Livegang                      | Ja       |
 | Deutschland-Grundlagen fachlich prüfen lassen | Eugenia | Vor dem Livegang        | Ja       |
 | Speicherdauer der Tracking-Ereignisse festlegen | Eugenia | Vor dem Livegang      | Ja       |
+| Verträge zur Auftragsverarbeitung abschließen | Eugenia | Vor dem Livegang        | Ja       |
 | Nutzung ohne Konto erfassen | Eugenia     | Nach dem Livegang, bei Bedarf         | Nein     |
 | Supabase-Cloud-Projekt anlegen | Eugenia  | Bevor die App online geht (Ende MVP)  | Ja       |
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
@@ -70,6 +71,12 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 **Empfehlung:** Einzelne Ereignisse **12 Monate** speichern und danach automatisch löschen. Für Produktentscheidungen reichen Auswertungen über ein Jahr. Wenn längere Vergleiche gewünscht sind, vor dem Löschen nur Summen ohne Nutzerbezug behalten (z. B. „Vorlagen kopiert im März: 120“). Umsetzung als geplante Datenbankaufgabe; die Frist kommt in die Datenschutzerklärung.
 
 **Wann:** vor dem Livegang, zusammen mit der Prüfung der Datenschutzerklärung.
+
+### Verträge zur Auftragsverarbeitung abschließen
+
+- [ ] Mit Supabase, dem Hosting-Anbieter und dem E-Mail-Dienst je einen Vertrag zur Auftragsverarbeitung (AVV, englisch DPA) abschließen.
+
+**Warum:** Die DSGVO verlangt ihn für Dienstleister, die personenbezogene Daten im Auftrag verarbeiten (Art. 28 DSGVO). Bei Supabase und Vercel lässt er sich in der Regel online in den Konto-Einstellungen abschließen. Die Datenschutzerklärung nennt die Verträge bereits.
 
 ### Nutzung ohne Konto erfassen (optional)
 
@@ -612,3 +619,50 @@ Die wichtigsten Zahlen und Regeln, die in den Artikeln stehen:
 ### Nächster Schritt
 
 Weiter mit **Phase 11: Privacy & Product Metric Tracking**.
+
+---
+
+## Phase 11 – Privacy & Product Metric Tracking
+
+**Status:** fertig am 27.09.2026.
+
+### Testergebnisse
+
+- 193 Unit-Tests sind grün (davon 5 neu).
+- 34 Datenbanktests sind grün (davon 10 neu für die Tabelle `events`).
+- 120 End-to-End-Tests sind grün, auf Handy und Desktop (davon 6 neu). Sie prüfen direkt in der Datenbank, welche Ereignisse gespeichert wurden.
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+- Die Auswertungs-Abfragen wurden mit Testdaten gegen die lokale Datenbank ausgeführt (Ergebnis wie erwartet, Testdaten danach zurückgerollt).
+
+### Entscheidungen (27.09.2026)
+
+- Erfasst werden **nur angemeldete Nutzer**.
+- Ereignisse werden **mit dem Konto gelöscht**; eine feste Speicherdauer ist noch offen (siehe „Offene Punkte“).
+
+### Was jetzt steht
+
+- **Tabelle `events`** (eigene Datenbank, kein externes Analyse-Tool, keine Cookies): `user_id`, `name`, `properties`, `created_at`.
+  - Nutzer können nur **eigene** Ereignisse **anlegen**, aber keine lesen, ändern oder löschen. Besucher ohne Konto haben keinen Zugriff.
+  - Nur die 6 festgelegten Ereignisnamen sind erlaubt.
+- **Die 6 Ereignisse:**
+  - `onboarding_completed` – mit `repeat`, wenn das Onboarding über „Profil“ wiederholt wurde
+  - `task_started`, `task_completed` – mit Aufgabe und Stufe; nur bei echten Änderungen (ein doppelter Klick zählt nicht, „Wieder öffnen“ wird nicht erfasst)
+  - `stage_completed` – einmal, wenn die letzte offene Aufgabe einer Stufe erledigt wird
+  - `calculator_used` – einmal pro Seitenaufruf, sobald jemand selbst etwas eingibt und ein gültiges Ergebnis erscheint; nur welcher Rechner, **keine Beträge**
+  - `template_copied` – nur die Vorlagen-ID, **kein Text**
+- **Robust:** Schlägt das Speichern eines Ereignisses fehl, wird das nur protokolliert. Die Nutzer merken davon nichts.
+- **Auswertung** in [supabase/analysis/metrics.sql](../supabase/analysis/metrics.sql), auszuführen im SQL-Editor von Supabase Studio:
+  1. **Hauptkennzahl:** Anteil der Nutzer, die innerhalb von 7 Tagen nach dem ersten Onboarding mindestens eine Aufgabe erledigen, pro Woche
+  2. Alle Ereignisse pro Woche
+  3. Meistgenutzte Rechner und Vorlagen der letzten 30 Tage
+- **Datenschutzerklärung** ergänzt: welche Nutzungsereignisse, Zweck, Rechtsgrundlage (berechtigtes Interesse), Widerspruchsrecht, keine Erfassung ohne Konto. Die Speicherdauer steht als Platzhalter drin; damit bleibt der Livegang gesperrt, bis sie entschieden ist.
+- **Bereits vorhanden** (aus früheren Phasen, laut ToDo-Liste Teil von Phase 11): Impressum nach § 5 DDG, nur technisch notwendige Cookies (kein Banner nötig), Konto löschen mit allen Daten.
+- **Nebenbei:** `npm run db:types` formatiert die erzeugte Typdatei jetzt selbst. Die neue Supabase-CLI liefert sie unformatiert.
+
+### Hinweise
+
+- Die E2E-Tests lesen die Ereignisse mit dem lokalen Admin-Schlüssel. Er wird zur Laufzeit aus `supabase status` gelesen und steht nicht im Repository.
+
+### Nächster Schritt
+
+Alle Phasen der ToDo-Liste sind umgesetzt. Als Nächstes steht die **Vorbereitung auf den Livegang** an: die offenen Punkte oben, dann ein kompletter manueller Durchlauf auf Handy und Desktop (siehe ToDo-Liste, „Cross-cutting Requirements“).
