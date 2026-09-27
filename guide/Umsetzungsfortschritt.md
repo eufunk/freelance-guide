@@ -14,8 +14,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | 6     | Roadmap & Task System             | ✅ Fertig     | 26.09.2026    |
 | 7     | Dashboard                         | ✅ Fertig     | 27.09.2026    |
 | 8     | Tools                             | ✅ Fertig     | 27.09.2026    |
-| 9     | Templates                         | ⏳ Als Nächstes |               |
-| 10    | German Freelancer Basics          | Offen         |               |
+| 9     | Templates                         | ✅ Fertig     | 27.09.2026    |
+| 10    | German Freelancer Basics          | ⏳ Als Nächstes |               |
 | 11    | Privacy & Product Metric Tracking | Offen         |               |
 
 ## Offene Punkte
@@ -25,6 +25,7 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 | Punkt                       | Wer         | Bis wann                              | Pflicht? |
 | --------------------------- | ----------- | ------------------------------------- | -------- |
 | Roadmap-Texte durchsehen    | Eugenia     | Vor dem Livegang                      | Ja       |
+| Vorlagen-Texte durchsehen   | Eugenia     | Vor dem Livegang                      | Ja       |
 | Supabase-Cloud-Projekt anlegen | Eugenia  | Bevor die App online geht (Ende MVP)  | Ja       |
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
 | Impressum und Datenschutz fertigstellen | Eugenia | Bevor die App online geht | Ja |
@@ -37,6 +38,14 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 **Warum:** Die Texte sind ein erster Entwurf aus Phase 2. Sie sind das, was Nutzer später als Anleitung lesen, und sollten deshalb fachlich geprüft sein. Ändern lassen sich Titel und Beschreibungen jederzeit. Nur die IDs (`id: "..."`) dürfen nach dem Livegang nicht mehr geändert werden, weil der gespeicherte Fortschritt der Nutzer daran hängt.
 
 **Offene Stilfrage:** Die Texte verwenden „Kunden“ und „Freelancer“ in der männlichen Grundform. Wo es leicht ging, sind sie neutral formuliert („Ansprechperson“). Falls die App durchgehend gendern soll, müsste das vor der Durchsicht entschieden werden.
+
+### Vorlagen-Texte durchsehen
+
+- [ ] Die 8 Vorlagen in [content/templates.ts](../content/templates.ts) lesen und korrigieren.
+- [ ] Die Hinweise zur E-Rechnung und zur Kleinunternehmerregelung im Rechnungsbeispiel prüfen (am besten zusammen mit der Recherche für Phase 10).
+- [ ] Entscheiden, ob die Stufen 8 und 9 („Eine Liste mit 20 potenziellen Kunden anlegen“, „Die ersten 10 Kontakte anschreiben“) umformuliert werden sollen, siehe Phase 9, „Zu prüfen vor dem Livegang“.
+
+**Warum:** Die Texte sind ein Entwurf von Claude. Titel und Texte lassen sich jederzeit ändern; nur die IDs sollten gleich bleiben, weil Stufen darauf verweisen.
 
 ### Impressum und Datenschutz fertigstellen
 
@@ -460,3 +469,53 @@ Nach dem Merge war die Prüfung auf GitHub rot: Zwei Tests des Stundensatz-Rechn
 ### Nächster Schritt
 
 Weiter mit **Phase 9: Templates** (Vorlagen).
+
+---
+
+## Phase 9 – Templates
+
+**Status:** fertig am 27.09.2026.
+
+### Testergebnisse
+
+- 184 Unit-Tests sind grün (davon 20 neu).
+- 24 Datenbanktests sind grün.
+- 106 End-to-End-Tests sind grün, auf Handy und Desktop (davon 14 neu).
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+- Übersicht und Vorlagen-Seiten auf 375 px Breite per Screenshot geprüft; nichts läuft seitlich über.
+
+### Entscheidungen (27.09.2026)
+
+- **Umfang:** Vorlagentext plus 2–4 kurze Tipps „So nutzt du die Vorlage“
+- **Aufbau:** Übersicht unter `/wissen/vorlagen`, jede Vorlage hat eine eigene Seite
+- **Anrede:** Nachrichten an Kunden verwenden „Sie“; die App spricht Nutzer weiter mit „du“ an
+- **Rechnungsbeispiel:** mit 19 % Umsatzsteuer, dazu ein Hinweis zur Kleinunternehmerregelung
+
+### Was jetzt steht
+
+- **8 Vorlagen** in [content/templates.ts](../content/templates.ts), gruppiert nach Profil & Portfolio, Kundengewinnung, Angebot & Auftrag, Abrechnung und Nach dem Projekt: Freelancer-Profil, Portfolio-Struktur, Kundenanfrage, Nachfass-Nachricht, Projekt-Briefing, Projektangebot, Rechnungsbeispiel, Bitte um Referenz.
+- **Art sichtbar gekennzeichnet:** „Vorlage“ (Lückentext), „Beispiel“ (ausformulierter Text zur Orientierung, hier die Portfolio-Struktur) und „Rechtliches Muster“ (Rechnungsbeispiel). Jede Art erklärt kurz, wie man sie nutzt.
+- **Rechnungsbeispiel:** mit gelb hervorgehobenem Hinweis „nicht rechtlich geprüft, keine individuelle Rechts- oder Steuerberatung“ und den üblichen Pflichtangaben nach § 14 UStG.
+- **Bearbeiten und Kopieren im Browser:** Textfeld, das mitwächst, Button „Text kopieren“ (mit Rückmeldung „Kopiert“) und „Zurücksetzen“ (fragt vorher nach). Klappt das Kopieren nicht, wird der Text markiert, damit man ihn von Hand kopieren kann. Nichts wird gespeichert; darauf weist die Seite hin.
+- **Offene Stellen:** Stellen zum Ausfüllen stehen in [eckigen Klammern]. Über dem Textfeld steht, wie viele noch offen sind („Noch 6 Stellen in Klammern anzupassen“).
+- **Platzhalter aus dem Profil:** Name, Haupt-Skill, weitere Skills, Berufserfahrung („3 Jahre“, „1 Jahr“, „weniger als ein Jahr“) und Stundensatz (gespeichertes Ergebnis des Rechners, aufgerundet) werden eingesetzt. Fehlende Werte bleiben als `{{…}}` sichtbar. Die Seite sagt, welche fehlen, und verlinkt auf „Angaben ergänzen“ bzw. „Stundensatz berechnen und speichern“. Ohne Konto gibt es den Hinweis, sich anzumelden.
+- **Verknüpfung:** Die Vorlagen hängen an 7 Stufen. Stufen-Seiten zeigen „Passende Vorlagen“, das Dashboard verlinkt direkt auf die jeweilige Vorlage, und jede Vorlage zeigt „Passt zu diesen Stufen“. Ein Test stellt sicher, dass jede Vorlage an mindestens einer Stufe hängt.
+- **Logik** in `lib/templates/fill.ts` (reine, getestete Funktionen).
+
+### Abweichungen vom Plan
+
+- **Neue Felder im Inhaltsmodell:** `description` (Kurzbeschreibung für die Übersicht) und `tips` (Tipps), beide Pflicht.
+- **Kein Tracking `template_copied`:** folgt mit Phase 11.
+
+### Hinweise
+
+- **Build-Fehler `EPERM`:** Ein Testserver für die Screenshots lief nach dem Stoppen noch weiter und hielt eine Datei im Build-Ordner fest. Nach dem Beenden des Prozesses und dem Löschen des alten Build-Ordners lief der Build durch.
+
+### Zu prüfen vor dem Livegang
+
+- **Kaltakquise per E-Mail:** Unaufgeforderte Werbe-E-Mails sind in Deutschland auch an Unternehmen in der Regel nicht erlaubt (§ 7 UWG). Die Vorlage „Kundenanfrage“ weist darauf hin und empfiehlt Kontakte aus dem Netzwerk, Empfehlungen und Ausschreibungen. Die Stufen 8 und 9 („Eine Liste mit 20 potenziellen Kunden anlegen“, „Die ersten 10 Kontakte anschreiben“) könnten aber als Aufruf zur Kaltakquise verstanden werden. Sollten sie umformuliert werden?
+- **E-Rechnung:** Der Tipp im Rechnungsbeispiel bleibt bewusst allgemein („schrittweise … ab wann das für dich gilt, klärst du mit deiner Steuerberatung“). Die genauen Fristen gehören in den Artikel zu Rechnungen in Phase 10.
+
+### Nächster Schritt
+
+Weiter mit **Phase 10: German Freelancer Basics** (Deutschland-Grundlagen).

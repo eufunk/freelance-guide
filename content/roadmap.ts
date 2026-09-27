@@ -105,6 +105,7 @@ export const roadmap = [
     shortExplanation: "Zeige mit konkreten Beispielen, was du kannst.",
     whyItMatters:
       "Ohne Referenzen müssen Kunden dir blind vertrauen. Ein Portfolio macht deine Arbeit sichtbar und senkt das Risiko für sie.",
+    relatedTemplateIds: ["portfolio-structure"],
     tasks: [
       {
         id: "select-projects",
@@ -173,6 +174,7 @@ export const roadmap = [
     shortExplanation: "Erstelle ein Profil, das dein Angebot auf einen Blick zeigt.",
     whyItMatters:
       "Dein Profil ist oft der erste Eindruck. Es entscheidet, ob ein Kunde dich kontaktiert oder weiterklickt.",
+    relatedTemplateIds: ["freelancer-profile"],
     tasks: [
       {
         id: "write-profile-text",
@@ -204,6 +206,7 @@ export const roadmap = [
     whyItMatters:
       "Wer die Anmeldung und Absicherung von Anfang an richtig macht, vermeidet Nachzahlungen und Ärger mit Behörden.",
     relatedToolIds: ["readiness-checklist"],
+    relatedTemplateIds: ["invoice-example"],
     tasks: [
       {
         id: "clarify-business-type",
@@ -278,6 +281,7 @@ export const roadmap = [
     shortExplanation: "Nimm Kontakt zu den Kunden auf deiner Liste auf.",
     whyItMatters:
       "Die meisten ersten Aufträge entstehen durch direkte Ansprache. Wer regelmäßig Kontakt aufnimmt, bekommt früher Gespräche.",
+    relatedTemplateIds: ["client-outreach", "follow-up-message"],
     tasks: [
       {
         id: "write-outreach-message",
@@ -309,6 +313,7 @@ export const roadmap = [
     whyItMatters:
       "Ein klares Angebot schafft Vertrauen und verhindert Missverständnisse über Umfang, Preis und Termine.",
     relatedToolIds: ["project-price"],
+    relatedTemplateIds: ["project-brief", "project-proposal"],
     tasks: [
       {
         id: "clarify-requirements",
@@ -405,6 +410,7 @@ export const roadmap = [
     shortExplanation: "Rechne deine Arbeit korrekt und pünktlich ab.",
     whyItMatters:
       "Nur eine korrekte Rechnung wird bezahlt – und sie ist die Grundlage für deine Buchhaltung und Steuererklärung.",
+    relatedTemplateIds: ["invoice-example"],
     tasks: [
       {
         id: "create-invoice",
@@ -434,6 +440,7 @@ export const roadmap = [
     title: "Referenz einholen",
     shortExplanation: "Bitte deinen Kunden um eine Empfehlung.",
     whyItMatters: "Eine echte Kundenstimme überzeugt neue Kunden mehr als jede Selbstbeschreibung.",
+    relatedTemplateIds: ["testimonial-request"],
     tasks: [
       {
         id: "ask-for-testimonial",

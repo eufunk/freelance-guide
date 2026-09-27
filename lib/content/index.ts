@@ -60,6 +60,11 @@ export function getTemplate(id: string): Template | undefined {
   return content.templates.find((template) => template.id === id);
 }
 
+/** Stages that link to a template, in roadmap order. */
+export function getStagesForTemplate(templateId: string): Stage[] {
+  return content.roadmap.filter((stage) => stage.relatedTemplateIds.includes(templateId));
+}
+
 export function getLegalArticles() {
   return content.legalArticles;
 }

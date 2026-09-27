@@ -4,7 +4,7 @@
 
 Diese Datei fasst alles zusammen, was man braucht, um in einem neuen Chat nahtlos weiterzuarbeiten. Einstieg für einen neuen Chat:
 
-> Lies `guide/Projektstand.md`, dann `guide/Umsetzungsfortschritt.md`, und mach mit Phase 9 weiter.
+> Lies `guide/Projektstand.md`, dann `guide/Umsetzungsfortschritt.md`, und mach mit Phase 10 weiter.
 
 Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umsetzungsfortschritt.md), der Plan und alle Grundsatzentscheidungen in [ToDo.docx](ToDo.docx) (Abschnitte „Decisions“ und „Development Rules“).
 
@@ -26,11 +26,11 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | 6     | Roadmap & Task System             | ✅ Fertig     |
 | 7     | Dashboard                         | ✅ Fertig     |
 | 8     | Tools                             | ✅ Fertig     |
-| 9     | Templates (Vorlagen)              | ⏳ Als Nächstes |
-| 10    | German Freelancer Basics          | Offen         |
+| 9     | Templates (Vorlagen)              | ✅ Fertig     |
+| 10    | German Freelancer Basics          | ⏳ Als Nächstes |
 | 11    | Privacy & Product Metric Tracking | Offen         |
 
-**Tests aktuell:** 164 Unit-Tests, 24 Datenbanktests (pgTAP), 92 End-to-End-Tests (Playwright, Handy + Desktop). Alles grün, lokal und auf GitHub.
+**Tests aktuell:** 184 Unit-Tests, 24 Datenbanktests (pgTAP), 106 End-to-End-Tests (Playwright, Handy + Desktop). Alles grün, lokal und auf GitHub.
 
 ## 3. Was die App heute kann
 
@@ -39,7 +39,8 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 - **Roadmap** mit 15 Stufen und 48 Aufgaben (Entwurf); Aufgaben starten / erledigen / wieder öffnen
 - **Dashboard** mit nächster Aufgabe als Hauptaktion, Fortschritt, „Danach“, „Zuletzt erledigt“, passenden Tools
 - **Tools:** Stundensatz-Rechner (speicherbar), Projektpreis-Rechner, Startklar-Check
-- **Wissen:** Übersicht mit Platzhaltern für Vorlagen (Phase 9) und Deutschland-Grundlagen (Phase 10)
+- **Vorlagen:** 8 Vorlagen unter `/wissen/vorlagen`, jede mit eigener Seite zum Bearbeiten und Kopieren im Browser (nichts wird gespeichert); Name, Skills, Erfahrung und Stundensatz werden aus dem Profil eingesetzt; an den passenden Stufen und im Dashboard verlinkt
+- **Wissen:** Übersicht mit Vorlagen und Platzhalter für Deutschland-Grundlagen (Phase 10)
 - **Profil:** Konto, Angaben ändern, Passwort ändern, Konto löschen (beides mit aktuellem Passwort)
 - **Impressum / Datenschutz:** mit Platzhaltern bzw. als Entwurf; ein Check verhindert eine Veröffentlichung in diesem Zustand
 
@@ -61,7 +62,7 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | `lib/auth/`                 | DAL (`requireUser`, `getCurrentUser`), Server-Aktionen, Validierung, Pfadregeln                 |
 | `lib/db/`                   | Datenzugriff (Profil, Task-Fortschritt, Rechner-Ergebnisse), generierte Typen                  |
 | `lib/progress/`             | Reine Fortschrittslogik (aktuelle Stufe, nächste Aufgabe, Dashboard)                           |
-| `lib/onboarding/`, `lib/tools/` | Reine, getestete Logik für Onboarding und Rechner                                           |
+| `lib/onboarding/`, `lib/tools/`, `lib/templates/` | Reine, getestete Logik für Onboarding, Rechner und Vorlagen (Platzhalter) |
 | `supabase/migrations/`      | Datenbankschema (3 Migrationen)                                                               |
 | `supabase/tests/database/`  | pgTAP-Tests (RLS, Constraints, Konto löschen)                                                 |
 | `e2e/`                      | Playwright-Tests; `e2e/helpers/` für Registrierung, Mailpit, Onboarding                        |
@@ -120,6 +121,8 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | Punkt                                                                                      | Wer         | Wann                 |
 | ------------------------------------------------------------------------------------------ | ----------- | -------------------- |
 | Roadmap-Texte (15 Stufen, 48 Aufgaben) fachlich durchsehen                                  | Eugenia     | Vor dem Livegang     |
+| Vorlagen-Texte (8 Vorlagen, `content/templates.ts`) durchsehen                              | Eugenia     | Vor dem Livegang     |
+| Stufen 8/9 wegen Kaltakquise (§ 7 UWG) ggf. umformulieren (siehe Phase 9 im Fortschritt)     | Eugenia     | Vor dem Livegang     |
 | Stilfrage: soll die App gendern? (bisher neutral formuliert)                                | Eugenia     | Vor der Durchsicht   |
 | Impressum ausfüllen, Datenschutzerklärung prüfen lassen (`content/legal-pages.ts`)          | Eugenia     | Vor dem Livegang     |
 | Rechner-Annahmen prüfen: Versicherung 600 €, Altersvorsorge 400 €, Steuer 30 % (`content/calculator-defaults.ts`) | Eugenia | Vor dem Livegang |
@@ -128,18 +131,14 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | GitHub stellt ab 19.10.2026 auf Ubuntu 26 um – ersten Lauf danach prüfen                     | Claude      | Nach dem 19.10.2026  |
 | Projekt ggf. aus OneDrive lösen (Geschwindigkeit)                                           | Eugenia     | Optional             |
 
-## 8. Nächster Schritt: Phase 9 – Templates
+## 8. Nächster Schritt: Phase 10 – Deutschland-Grundlagen
 
-Aus der ToDo-Liste und den bisherigen Entscheidungen:
-
-- **8 Vorlagen:** Freelancer-Profil, Portfolio-Struktur, Kundenanfrage, Nachfass-Nachricht, Projektangebot, Projekt-Briefing, Rechnungsbeispiel, Bitte um Referenz
-- **Bearbeiten und Kopieren im Browser**, nichts wird gespeichert (Entscheidung)
-- **Platzhalter** aus dem Profil vorausfüllen; erlaubt sind nur `{{name}}`, `{{mainSkill}}`, `{{additionalSkills}}`, `{{yearsOfExperience}}`, `{{hourlyRate}}` (in `lib/content/schema.ts`; unbekannte brechen den Build). Fehlende Werte bleiben als Platzhalter sichtbar. `{{hourlyRate}}` kann aus dem gespeicherten Stundensatz kommen.
-- **Art jeder Vorlage** sichtbar kennzeichnen: `example`, `template` oder `legal-sample`; rechtliche Muster (z. B. Rechnung) brauchen einen Hinweis (Schema erzwingt `disclaimer`). Nie als rechtssicher darstellen.
-- **Schon vorbereitet:** Schema und Validierung (`templateSchema`), `content/templates.ts` (leer), `getTemplates()`/`getTemplate()`, Seite `/wissen/vorlagen` (Platzhalter), `relatedTemplateIds` an den Stufen (noch leer) – Dashboard und Stufen-Seiten zeigen verknüpfte Vorlagen automatisch an, sobald die IDs eingetragen sind.
-- Vorlagen-Texte sind Inhalte → vermutlich vorher mit Eugenia klären, wie ausführlich sie sein sollen.
+- **9 Themen:** Freiberufler vs. Gewerbe, Anmeldung, Finanzamt, Kleinunternehmerregelung, Umsatzsteuer, Rechnungen inkl. E-Rechnung, Krankenversicherung, Altersvorsorge, Scheinselbstständigkeit.
+- Jeder Artikel mit Quellen und `lastVerified`; der Hinweis „keine Rechts-/Steuerberatung“ wird automatisch angezeigt; die Hilfsfunktion `isVerificationStale()` existiert. Größter Aufwand ist die Recherche.
+- **Schon vorbereitet:** `legalArticleSchema` (Quellen und `lastVerified` Pflicht), `content/legal-articles.ts` (leer), `getLegalArticles()`, Seite `/wissen/grundlagen` (Platzhalter).
+- Das Rechnungsbeispiel (Phase 9) nennt bei der E-Rechnung bewusst keine Fristen; die gehören in den Artikel zu Rechnungen.
+- Vorher mit Eugenia klären: Welche Quellen gelten als verlässlich (z. B. Bundesfinanzministerium, IHK, Deutsche Rentenversicherung), und wie ausführlich sollen die Artikel sein?
 
 ### Danach
 
-- **Phase 10 – Deutschland-Grundlagen:** 9 Themen (Freiberufler vs. Gewerbe, Anmeldung, Finanzamt, Kleinunternehmerregelung, Umsatzsteuer, Rechnungen inkl. E-Rechnung, Krankenversicherung, Altersvorsorge, Scheinselbstständigkeit). Jeder Artikel mit Quellen und `lastVerified`; Hinweis „keine Rechts-/Steuerberatung“ wird automatisch angezeigt; Hilfsfunktion `isVerificationStale()` existiert. Größter Aufwand ist die Recherche.
 - **Phase 11 – Datenschutz & Tracking:** Tabelle `events` (onboarding_completed, task_started, task_completed, stage_completed, calculator_used, template_copied), Auswertung per SQL, Datenschutzerklärung ergänzen.

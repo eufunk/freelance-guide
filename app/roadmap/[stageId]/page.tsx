@@ -7,8 +7,9 @@ import { InfoCard } from "@/components/layout/info-card";
 import { PageContainer } from "@/components/layout/page-container";
 import { ProgressBar } from "@/components/roadmap/progress-bar";
 import { TaskCard } from "@/components/roadmap/task-card";
+import { templateKindLabels } from "@/components/templates/template-labels";
 import { buttonVariants } from "@/components/ui/button";
-import { getRoadmap, getStage, getTool } from "@/lib/content";
+import { getRoadmap, getStage, getTemplate, getTool } from "@/lib/content";
 import { getProgressByTask } from "@/lib/db/task-progress";
 import { stageProgress } from "@/lib/progress/roadmap-progress";
 
@@ -30,6 +31,9 @@ export default async function StagePage({ params }: PageProps<"/roadmap/[stageId
   const previous = roadmap[stage.order - 2];
   const next = roadmap[stage.order];
   const tools = stage.relatedToolIds.map((id) => getTool(id)).filter((tool) => tool !== undefined);
+  const templates = stage.relatedTemplateIds
+    .map((id) => getTemplate(id))
+    .filter((template) => template !== undefined);
 
   return (
     <PageContainer className="max-w-3xl">
@@ -99,6 +103,25 @@ export default async function StagePage({ params }: PageProps<"/roadmap/[stageId
                 title={tool.title}
                 description={tool.description}
                 href={tool.href}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {templates.length > 0 && (
+        <section aria-labelledby="templates-heading" className="mt-10 space-y-3">
+          <h2 id="templates-heading" className="text-lg font-semibold">
+            Passende Vorlagen
+          </h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            {templates.map((template) => (
+              <InfoCard
+                key={template.id}
+                href={`/wissen/vorlagen/${template.id}`}
+                title={template.title}
+                description={template.description}
+                badge={templateKindLabels[template.kind]}
               />
             ))}
           </div>
