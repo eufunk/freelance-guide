@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   completedTaskIds,
+  completesStage,
   currentStage,
   nextRecommendedTask,
   nextTask,
@@ -180,5 +181,50 @@ describe("recentlyCompleted", () => {
     });
 
     expect(recentlyCompleted(roadmap, p, 2)).toHaveLength(2);
+  });
+});
+
+describe("completesStage", () => {
+  const stage = roadmap[0]!;
+
+  it("is true when the last open task of the stage is completed", () => {
+    expect(completesStage(stage, "s2", new Map([["s1", done]]))).toBe(true);
+  });
+
+  it("is false while other tasks of the stage are open", () => {
+    expect(completesStage(stage, "s2", new Map())).toBe(false);
+    expect(completesStage(stage, "s2", new Map([["s1", started("2026-09-01")]]))).toBe(false);
+  });
+
+  it("is false if the task was already completed (no second event)", () => {
+    expect(
+      completesStage(
+        stage,
+        "s2",
+        new Map([
+          ["s1", done],
+          ["s2", done],
+        ]),
+      ),
+    ).toBe(false);
+  });
+
+  it("is false for a task of another stage", () => {
+    expect(
+      completesStage(
+        stage,
+        "c1",
+        new Map([
+          ["s1", done],
+          ["s2", done],
+        ]),
+      ),
+    ).toBe(false);
+  });
+
+  it("counts tasks marked done by the onboarding", () => {
+    expect(completesStage(stage, "s2", new Map([["s1", doneAt("2026-09-01", "onboarding")]]))).toBe(
+      true,
+    );
   });
 });

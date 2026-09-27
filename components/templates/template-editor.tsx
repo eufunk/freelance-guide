@@ -5,11 +5,18 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { countOpenGaps } from "@/lib/templates/fill";
+import { recordTemplateCopy } from "@/lib/tracking/actions";
 
 type CopyState = "idle" | "copied" | "failed";
 
 /** Edit a template in the browser and copy it. Nothing is saved. */
-export function TemplateEditor({ initialText }: { initialText: string }) {
+export function TemplateEditor({
+  templateId,
+  initialText,
+}: {
+  templateId: string;
+  initialText: string;
+}) {
   const [text, setText] = useState(initialText);
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -30,6 +37,7 @@ export function TemplateEditor({ initialText }: { initialText: string }) {
     try {
       await navigator.clipboard.writeText(text);
       setCopyState("copied");
+      void recordTemplateCopy(templateId);
     } catch {
       // No clipboard access (e.g. denied permission): select the text for manual copying.
       textareaRef.current?.focus();

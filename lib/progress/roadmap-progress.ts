@@ -45,6 +45,18 @@ export function stageProgress(stage: StageRef, progress: ProgressByTask): StageP
   return { completed, total, status };
 }
 
+/**
+ * True if completing `taskId` completes the stage: the task was not completed
+ * before and all other tasks of the stage are. Used to record stage_completed once.
+ */
+export function completesStage(stage: StageRef, taskId: string, before: ProgressByTask): boolean {
+  if (!stage.tasks.some((task) => task.id === taskId)) return false;
+  if (statusOf(taskId, before) === "completed") return false;
+  return stage.tasks.every(
+    (task) => task.id === taskId || statusOf(task.id, before) === "completed",
+  );
+}
+
 /** Completed tasks of all tasks, with a rounded percentage. */
 export function roadmapProgress(roadmap: StageRef[], progress: ProgressByTask) {
   const total = roadmap.reduce((sum, stage) => sum + stage.tasks.length, 0);

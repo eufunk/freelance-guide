@@ -5,6 +5,7 @@ import { useActionState, useState } from "react";
 
 import { FormMessage } from "@/components/auth/form-message";
 import { NumberField } from "@/components/tools/number-field";
+import { useRecordCalculatorUse } from "@/components/tools/use-record-calculator-use";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { formatEuro, formatNumber } from "@/lib/format";
 import { saveHourlyRate } from "@/lib/tools/actions";
@@ -71,6 +72,7 @@ export function HourlyRateCalculator({ initialValues, canSave }: HourlyRateCalcu
   const [saveState, saveAction, saving] = useActionState(saveHourlyRate, initialSaveResultState);
 
   const parsed = parseAndCalculateHourlyRate(values);
+  useRecordCalculatorUse("hourly-rate", parsed.ok && Object.keys(touched).length > 0);
   const errorOf = (field: HourlyRateField) =>
     !parsed.ok && touched[field] ? parsed.errors[field] : undefined;
 
