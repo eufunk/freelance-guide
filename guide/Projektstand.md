@@ -126,6 +126,8 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | Stufen 8/9 wegen Kaltakquise (§ 7 UWG) ggf. umformulieren (siehe Phase 9 im Fortschritt)     | Eugenia     | Vor dem Livegang     |
 | Deutschland-Grundlagen (9 Artikel) von einer Steuerberatung prüfen lassen, dann `expertReviewed: true` | Eugenia | Vor dem Livegang |
 | Deutschland-Grundlagen jährlich prüfen (Zahlen 2027, E-Rechnung, Rentenkommission)          | Claude/Eugenia | Januar 2027      |
+| Speicherdauer der Tracking-Ereignisse festlegen (Empfehlung: 12 Monate, dann löschen)       | Eugenia     | Vor dem Livegang     |
+| Nutzung ohne Konto erfassen? (Empfehlung: vorerst nein; später ggf. Zähler ohne Cookie/IP)  | Eugenia     | Optional, nach Livegang |
 | Stilfrage: soll die App gendern? (bisher neutral formuliert)                                | Eugenia     | Vor der Durchsicht   |
 | Impressum ausfüllen, Datenschutzerklärung prüfen lassen (`content/legal-pages.ts`)          | Eugenia     | Vor dem Livegang     |
 | Rechner-Annahmen prüfen: Versicherung 600 €, Altersvorsorge 400 €, Steuer 30 % (`content/calculator-defaults.ts`) | Eugenia | Vor dem Livegang |
@@ -139,4 +141,5 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 - **Tabelle `events`** mit den Ereignissen `onboarding_completed`, `task_started`, `task_completed`, `stage_completed`, `calculator_used`, `template_copied`
 - Auswertung per SQL (kein Analyse-Dashboard, siehe ToDo-Liste „Do NOT add“)
 - Datenschutzerklärung (`content/legal-pages.ts`) um das Tracking ergänzen
-- Vorher mit Eugenia klären: Nur angemeldete Nutzer erfassen oder auch anonyme (z. B. beim Kopieren einer Vorlage ohne Konto)? Wie lange werden Ereignisse gespeichert?
+- **Entschieden (27.09.2026):** Erfasst werden vorerst **nur angemeldete Nutzer**; Ereignisse werden mit dem Konto gelöscht. Eine feste Speicherdauer wird noch nicht umgesetzt.
+- Beide Punkte stehen mit Bewertung und Empfehlung als offene Punkte in `Umsetzungsfortschritt.md` („Speicherdauer der Tracking-Ereignisse festlegen“, „Nutzung ohne Konto erfassen“).
