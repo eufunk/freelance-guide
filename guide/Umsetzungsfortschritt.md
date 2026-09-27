@@ -27,6 +27,8 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 | Roadmap-Texte durchsehen    | Eugenia     | Vor dem Livegang                      | Ja       |
 | Vorlagen-Texte durchsehen   | Eugenia     | Vor dem Livegang                      | Ja       |
 | Deutschland-Grundlagen fachlich prüfen lassen | Eugenia | Vor dem Livegang        | Ja       |
+| Speicherdauer der Tracking-Ereignisse festlegen | Eugenia | Vor dem Livegang      | Ja       |
+| Nutzung ohne Konto erfassen | Eugenia     | Nach dem Livegang, bei Bedarf         | Nein     |
 | Supabase-Cloud-Projekt anlegen | Eugenia  | Bevor die App online geht (Ende MVP)  | Ja       |
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
 | Impressum und Datenschutz fertigstellen | Eugenia | Bevor die App online geht | Ja |
@@ -56,6 +58,34 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 **Warum:** Die Artikel sind ein Entwurf von Claude auf Basis offizieller Quellen, aber keine geprüfte Fachinformation. Die Regeln ändern sich laufend.
 
 **Absicherung:** Solange ein Artikel nicht als geprüft markiert ist, zeigt die Seite „Entwurf“ an, und ein Build für eine öffentliche Adresse bricht ab. Außerdem schlägt der Build fehl, sobald ein Artikel länger als 12 Monate nicht mehr geprüft wurde (`lastVerified`).
+
+### Speicherdauer der Tracking-Ereignisse festlegen
+
+- [ ] Entscheiden, wie lange Ereignisse (Phase 11) gespeichert bleiben.
+
+**Stand (27.09.2026):** Bewusst noch nicht entschieden. Ereignisse werden mit dem Konto gelöscht, eine feste Frist gibt es noch nicht.
+
+**Bewertung:** Die Ereignisse hängen an einem Nutzerkonto und sind damit personenbezogene Daten. Die DSGVO verlangt, sie nur so lange zu speichern, wie sie für den Zweck nötig sind (Speicherbegrenzung, Art. 5 Abs. 1 lit. e DSGVO), und die Frist in der Datenschutzerklärung zu nennen. Ohne Frist wachsen die Daten aktiver Nutzer unbegrenzt.
+
+**Empfehlung:** Einzelne Ereignisse **12 Monate** speichern und danach automatisch löschen. Für Produktentscheidungen reichen Auswertungen über ein Jahr. Wenn längere Vergleiche gewünscht sind, vor dem Löschen nur Summen ohne Nutzerbezug behalten (z. B. „Vorlagen kopiert im März: 120“). Umsetzung als geplante Datenbankaufgabe; die Frist kommt in die Datenschutzerklärung.
+
+**Wann:** vor dem Livegang, zusammen mit der Prüfung der Datenschutzerklärung.
+
+### Nutzung ohne Konto erfassen (optional)
+
+- [ ] Entscheiden, ob auch Besucher ohne Konto erfasst werden sollen.
+
+**Stand (27.09.2026):** Nein, vorerst werden nur angemeldete Nutzer erfasst.
+
+**Bewertung:**
+
+- **Lücke:** Tools und Vorlagen sind ohne Konto nutzbar. Deren Nutzung (`calculator_used`, `template_copied`) wird bei Besuchern ohne Konto nicht gezählt. Die Zahlen zeigen also nur einen Teil der Nutzung und überschätzen den Anteil der Angemeldeten.
+- **Rechtlich:** Wer zum Wiedererkennen etwas im Browser speichert oder ausliest (Cookie, gespeicherte Kennung), braucht dafür in der Regel eine Einwilligung (§ 25 TDDDG), also einen Cookie-Banner. Das kostet Nutzerfreundlichkeit und Vertrauen.
+- **Ohne Banner denkbar:** reines Zählen auf dem Server ohne Kennung und ohne gespeicherte IP-Adresse (nur Ereignis und Datum). Das ist datenschutzfreundlich, erlaubt aber keine Aussagen über einzelne Besucher (z. B. „wie viele verschiedene Personen“).
+
+**Empfehlung:** Für das MVP so lassen. Falls später wichtig wird, wie oft die öffentlichen Tools genutzt werden: Zähler auf dem Server ohne Kennung, ohne IP-Adresse und ohne Cookie, also ohne Banner. Vor der Umsetzung die Datenschutzerklärung anpassen und rechtlich prüfen lassen. Kein Tracking mit Cookies oder Drittanbietern.
+
+**Wann:** frühestens nach dem Livegang, wenn Entscheidungen von diesen Zahlen abhängen.
 
 ### Impressum und Datenschutz fertigstellen
 
