@@ -51,10 +51,12 @@ function validContent(): RawContent {
       {
         id: "kleinunternehmer",
         title: "Kleinunternehmerregelung",
+        category: "Steuern",
         summary: "Kurz",
         body: "Text",
         sources: [{ title: "Quelle", url: "https://example.org" }],
         lastVerified: "2026-09-01",
+        expertReviewed: false,
       },
     ],
     onboardingRules: {
@@ -177,6 +179,14 @@ describe("loadContent", () => {
       .proposedDoneByGoal["more-clients"];
 
     expect(problemsOf(raw)).toEqual([expect.stringContaining("more-clients")]);
+  });
+
+  it("rejects references to unknown legal articles", () => {
+    const raw = validContent();
+    (raw.roadmap as { relatedArticleIds: string[] }[])[0]!.relatedArticleIds = ["missing"];
+    expect(problemsOf(raw)).toEqual([
+      'Stage "stage-one" refers to unknown legal article "missing"',
+    ]);
   });
 
   it("rejects unknown template placeholders", () => {

@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { legalArticles } from "@/content/legal-articles";
 import { imprint, privacyPolicy, siteOperator } from "@/content/legal-pages";
 import { findPlaceholders, isPublicSiteUrl } from "@/lib/content/placeholders";
 
-// Blocks going live with unfinished legal pages. Runs before every build
+// Blocks going live with unfinished legal pages and unreviewed legal articles. Runs before every build
 // (npm run content:check). It only applies when the site URL of the build is a
 // public address, so local development and CI (localhost) are not affected.
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -16,5 +17,12 @@ describe.runIf(isPublicSiteUrl(siteUrl))(`release checks for ${siteUrl}`, () => 
 
   it("has a reviewed privacy policy (draft: false)", () => {
     expect(privacyPolicy.draft).toBe(false);
+  });
+
+  it("has only expert-reviewed Germany basics articles", () => {
+    const unreviewed = legalArticles
+      .filter((article) => !article.expertReviewed)
+      .map((article) => article.id);
+    expect(unreviewed).toEqual([]);
   });
 });

@@ -5,7 +5,7 @@ import { roadmap } from "@/content/roadmap";
 import { templates } from "@/content/templates";
 import { tools } from "@/content/tools";
 
-import type { Stage, Task, Template, Tool, ToolId } from "./schema";
+import type { LegalArticle, Stage, Task, Template, Tool, ToolId } from "./schema";
 import { loadContent } from "./validate";
 
 export const rawContent = {
@@ -65,8 +65,24 @@ export function getStagesForTemplate(templateId: string): Stage[] {
   return content.roadmap.filter((stage) => stage.relatedTemplateIds.includes(templateId));
 }
 
-export function getLegalArticles() {
+export function getLegalArticles(): LegalArticle[] {
   return content.legalArticles;
+}
+
+export function getLegalArticle(id: string): LegalArticle | undefined {
+  return content.legalArticles.find((article) => article.id === id);
+}
+
+/** Stages that link to a Germany basics article, in roadmap order. */
+export function getStagesForArticle(articleId: string): Stage[] {
+  return content.roadmap.filter((stage) => stage.relatedArticleIds.includes(articleId));
+}
+
+/** Items grouped by their category, keeping the content order. */
+export function groupByCategory<T extends { category: string }>(items: T[]): [string, T[]][] {
+  const groups = new Map<string, T[]>();
+  for (const item of items) groups.set(item.category, [...(groups.get(item.category) ?? []), item]);
+  return [...groups];
 }
 
 export function getOnboardingRules() {

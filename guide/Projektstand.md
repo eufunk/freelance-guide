@@ -1,10 +1,10 @@
 # Projektstand und Übergabe
 
-**Stand:** 27.09.2026 · Phase 9 auf `main` gemergt · GitHub-Prüfung grün
+**Stand:** 27.09.2026 · Phase 10 auf `main` gemergt
 
 Diese Datei fasst alles zusammen, was man braucht, um in einem neuen Chat nahtlos weiterzuarbeiten. Einstieg für einen neuen Chat:
 
-> Lies `guide/Projektstand.md`, dann `guide/Umsetzungsfortschritt.md`, und mach mit Phase 10 weiter.
+> Lies `guide/Projektstand.md`, dann `guide/Umsetzungsfortschritt.md`, und mach mit Phase 11 weiter.
 
 Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umsetzungsfortschritt.md), der Plan und alle Grundsatzentscheidungen in [ToDo.docx](ToDo.docx) (Abschnitte „Decisions“ und „Development Rules“).
 
@@ -27,10 +27,10 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | 7     | Dashboard                         | ✅ Fertig     |
 | 8     | Tools                             | ✅ Fertig     |
 | 9     | Templates (Vorlagen)              | ✅ Fertig     |
-| 10    | German Freelancer Basics          | ⏳ Als Nächstes |
-| 11    | Privacy & Product Metric Tracking | Offen         |
+| 10    | German Freelancer Basics          | ✅ Fertig     |
+| 11    | Privacy & Product Metric Tracking | ⏳ Als Nächstes |
 
-**Tests aktuell:** 184 Unit-Tests, 24 Datenbanktests (pgTAP), 106 End-to-End-Tests (Playwright, Handy + Desktop). Alles grün, lokal und auf GitHub.
+**Tests aktuell:** 188 Unit-Tests, 24 Datenbanktests (pgTAP), 114 End-to-End-Tests (Playwright, Handy + Desktop). Alles grün, lokal und auf GitHub.
 
 ## 3. Was die App heute kann
 
@@ -40,7 +40,7 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 - **Dashboard** mit nächster Aufgabe als Hauptaktion, Fortschritt, „Danach“, „Zuletzt erledigt“, passenden Tools
 - **Tools:** Stundensatz-Rechner (speicherbar), Projektpreis-Rechner, Startklar-Check
 - **Vorlagen:** 8 Vorlagen unter `/wissen/vorlagen`, jede mit eigener Seite zum Bearbeiten und Kopieren im Browser (nichts wird gespeichert); Name, Skills, Erfahrung und Stundensatz werden aus dem Profil eingesetzt; an den passenden Stufen und im Dashboard verlinkt
-- **Wissen:** Übersicht mit Vorlagen und Platzhalter für Deutschland-Grundlagen (Phase 10)
+- **Deutschland-Grundlagen:** 9 Artikel unter `/wissen/grundlagen` mit Quellen, Prüfdatum und Hinweis „keine Rechts-/Steuerberatung“; als Entwurf markiert, bis fachlich geprüft; an den passenden Stufen verlinkt
 - **Profil:** Konto, Angaben ändern, Passwort ändern, Konto löschen (beides mit aktuellem Passwort)
 - **Impressum / Datenschutz:** mit Platzhaltern bzw. als Entwurf; ein Check verhindert eine Veröffentlichung in diesem Zustand
 
@@ -50,6 +50,7 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 - **Supabase** (Postgres + Auth) – lokal in WSL, siehe Abschnitt 5
 - **Tailwind CSS 4 + shadcn/ui** (Base UI); Buttons und Eingaben mind. 44 px hoch
 - **Zod 4** für Validierung (Content, Formulare, Umgebungsvariablen)
+- **react-markdown** für die Artikeltexte (HTML im Text wird nicht ausgeführt)
 - **Vitest** (Unit), **pgTAP** (Datenbank), **Playwright** (E2E)
 - **CI:** GitHub Actions (`.github/workflows/ci.yml`): Lint, Format, Typecheck, Unit, Supabase-Start, DB-Tests, Build, E2E; bei Fehlern werden Playwright-Ergebnisse als Artefakt gespeichert
 
@@ -123,6 +124,8 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | Roadmap-Texte (15 Stufen, 48 Aufgaben) fachlich durchsehen                                  | Eugenia     | Vor dem Livegang     |
 | Vorlagen-Texte (8 Vorlagen, `content/templates.ts`) durchsehen                              | Eugenia     | Vor dem Livegang     |
 | Stufen 8/9 wegen Kaltakquise (§ 7 UWG) ggf. umformulieren (siehe Phase 9 im Fortschritt)     | Eugenia     | Vor dem Livegang     |
+| Deutschland-Grundlagen (9 Artikel) von einer Steuerberatung prüfen lassen, dann `expertReviewed: true` | Eugenia | Vor dem Livegang |
+| Deutschland-Grundlagen jährlich prüfen (Zahlen 2027, E-Rechnung, Rentenkommission)          | Claude/Eugenia | Januar 2027      |
 | Stilfrage: soll die App gendern? (bisher neutral formuliert)                                | Eugenia     | Vor der Durchsicht   |
 | Impressum ausfüllen, Datenschutzerklärung prüfen lassen (`content/legal-pages.ts`)          | Eugenia     | Vor dem Livegang     |
 | Rechner-Annahmen prüfen: Versicherung 600 €, Altersvorsorge 400 €, Steuer 30 % (`content/calculator-defaults.ts`) | Eugenia | Vor dem Livegang |
@@ -131,14 +134,9 @@ Ausführliche Berichte zu jeder Phase stehen in [Umsetzungsfortschritt.md](Umset
 | GitHub stellt ab 19.10.2026 auf Ubuntu 26 um – ersten Lauf danach prüfen                     | Claude      | Nach dem 19.10.2026  |
 | Projekt ggf. aus OneDrive lösen (Geschwindigkeit)                                           | Eugenia     | Optional             |
 
-## 8. Nächster Schritt: Phase 10 – Deutschland-Grundlagen
+## 8. Nächster Schritt: Phase 11 – Datenschutz & Tracking
 
-- **9 Themen:** Freiberufler vs. Gewerbe, Anmeldung, Finanzamt, Kleinunternehmerregelung, Umsatzsteuer, Rechnungen inkl. E-Rechnung, Krankenversicherung, Altersvorsorge, Scheinselbstständigkeit.
-- Jeder Artikel mit Quellen und `lastVerified`; der Hinweis „keine Rechts-/Steuerberatung“ wird automatisch angezeigt; die Hilfsfunktion `isVerificationStale()` existiert. Größter Aufwand ist die Recherche.
-- **Schon vorbereitet:** `legalArticleSchema` (Quellen und `lastVerified` Pflicht), `content/legal-articles.ts` (leer), `getLegalArticles()`, Seite `/wissen/grundlagen` (Platzhalter).
-- Das Rechnungsbeispiel (Phase 9) nennt bei der E-Rechnung bewusst keine Fristen; die gehören in den Artikel zu Rechnungen.
-- Vorher mit Eugenia klären: Welche Quellen gelten als verlässlich (z. B. Bundesfinanzministerium, IHK, Deutsche Rentenversicherung), und wie ausführlich sollen die Artikel sein?
-
-### Danach
-
-- **Phase 11 – Datenschutz & Tracking:** Tabelle `events` (onboarding_completed, task_started, task_completed, stage_completed, calculator_used, template_copied), Auswertung per SQL, Datenschutzerklärung ergänzen.
+- **Tabelle `events`** mit den Ereignissen `onboarding_completed`, `task_started`, `task_completed`, `stage_completed`, `calculator_used`, `template_copied`
+- Auswertung per SQL (kein Analyse-Dashboard, siehe ToDo-Liste „Do NOT add“)
+- Datenschutzerklärung (`content/legal-pages.ts`) um das Tracking ergänzen
+- Vorher mit Eugenia klären: Nur angemeldete Nutzer erfassen oder auch anonyme (z. B. beim Kopieren einer Vorlage ohne Konto)? Wie lange werden Ereignisse gespeichert?

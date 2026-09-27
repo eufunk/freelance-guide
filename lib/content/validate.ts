@@ -124,6 +124,7 @@ export function loadContent(raw: RawContent, today: string): Content {
   const stageIds = new Set(stages.map((s) => s.id));
   const toolIds = new Set(tools.data.map((t) => t.id));
   const templateIds = new Set(templates.data.map((t) => t.id));
+  const articleIds = new Set(legalArticles.data.map((a) => a.id));
 
   for (const stage of stages) {
     for (const toolId of stage.relatedToolIds) {
@@ -133,6 +134,10 @@ export function loadContent(raw: RawContent, today: string): Content {
     for (const templateId of stage.relatedTemplateIds) {
       if (!templateIds.has(templateId))
         problems.push(`Stage "${stage.id}" refers to unknown template "${templateId}"`);
+    }
+    for (const articleId of stage.relatedArticleIds) {
+      if (!articleIds.has(articleId))
+        problems.push(`Stage "${stage.id}" refers to unknown legal article "${articleId}"`);
     }
   }
 
