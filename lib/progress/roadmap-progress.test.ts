@@ -5,6 +5,7 @@ import {
   currentStage,
   nextRecommendedTask,
   nextTask,
+  recentlyCompleted,
   roadmapProgress,
   stageProgress,
   statusOf,
@@ -22,11 +23,19 @@ const done: TaskProgress = {
   status: "completed",
   startedAt: "2026-09-01",
   completedAt: "2026-09-02",
+  source: "user",
 };
+const doneAt = (at: string, source: TaskProgress["source"] = "user"): TaskProgress => ({
+  status: "completed",
+  startedAt: at,
+  completedAt: at,
+  source,
+});
 const started = (at: string): TaskProgress => ({
   status: "in_progress",
   startedAt: at,
   completedAt: null,
+  source: "user",
 });
 
 function progress(entries: Record<string, TaskProgress>): ProgressByTask {
@@ -139,5 +148,37 @@ describe("nextRecommendedTask", () => {
   it("is undefined without a current task or at the end", () => {
     expect(nextRecommendedTask(roadmap, progress({}), undefined)).toBe(undefined);
     expect(nextRecommendedTask(roadmap, progress({}), { id: "c1" })).toBe(undefined);
+  });
+});
+
+describe("recentlyCompleted", () => {
+  it("lists tasks the user completed, newest first", () => {
+    const p = progress({
+      s1: doneAt("2026-09-01T10:00:00Z"),
+      v1: doneAt("2026-09-03T10:00:00Z"),
+      s2: doneAt("2026-09-02T10:00:00Z"),
+      c1: started("2026-09-04T10:00:00Z"),
+    });
+
+    expect(recentlyCompleted(roadmap, p).map((entry) => entry.task.id)).toEqual(["v1", "s2", "s1"]);
+  });
+
+  it("leaves out tasks marked as done by the onboarding", () => {
+    const p = progress({
+      s1: doneAt("2026-09-01T10:00:00Z", "onboarding"),
+      s2: doneAt("2026-09-02T10:00:00Z"),
+    });
+
+    expect(recentlyCompleted(roadmap, p).map((entry) => entry.task.id)).toEqual(["s2"]);
+  });
+
+  it("returns at most `limit` tasks", () => {
+    const p = progress({
+      s1: doneAt("2026-09-01T10:00:00Z"),
+      s2: doneAt("2026-09-02T10:00:00Z"),
+      v1: doneAt("2026-09-03T10:00:00Z"),
+    });
+
+    expect(recentlyCompleted(roadmap, p, 2)).toHaveLength(2);
   });
 });

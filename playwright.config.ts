@@ -23,6 +23,10 @@ export default defineConfig({
     command: process.env.CI ? `npx next start -p ${port}` : `npx next dev -p ${port}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
+    // Show the server's output in the test log, so server errors behind a failing
+    // test are visible (see "Open issues" in guide/Umsetzungsfortschritt.md).
+    stdout: "pipe",
+    stderr: "pipe",
     timeout: 120_000,
   },
 });
