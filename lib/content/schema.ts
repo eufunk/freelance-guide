@@ -40,6 +40,7 @@ export const stageSchema = z.strictObject({
   resources: z.array(resourceSchema).default([]),
   relatedToolIds: z.array(z.enum(toolIds)).default([]),
   relatedTemplateIds: z.array(id).default([]),
+  relatedArticleIds: z.array(id).default([]),
 });
 
 export const roadmapSchema = z.array(stageSchema).min(1);
@@ -85,12 +86,16 @@ export const templateSchema = z
 export const legalArticleSchema = z.strictObject({
   id,
   title: text,
+  category: text,
+  /** One or two sentences: the short answer, shown above the body and on cards. */
   summary: text,
   /** Markdown */
   body: text,
   sources: z.array(z.strictObject({ title: text, url: z.url() })).min(1),
   /** ISO date (YYYY-MM-DD) of the last check against the sources. */
   lastVerified: z.iso.date(),
+  /** True once an expert (e.g. a tax advisor) has checked the article. Required to go live. */
+  expertReviewed: z.boolean(),
 });
 
 export const goals = ["become-freelancer", "first-client", "more-clients"] as const;

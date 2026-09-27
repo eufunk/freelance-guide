@@ -15,8 +15,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | 7     | Dashboard                         | ✅ Fertig     | 27.09.2026    |
 | 8     | Tools                             | ✅ Fertig     | 27.09.2026    |
 | 9     | Templates                         | ✅ Fertig     | 27.09.2026    |
-| 10    | German Freelancer Basics          | ⏳ Als Nächstes |               |
-| 11    | Privacy & Product Metric Tracking | Offen         |               |
+| 10    | German Freelancer Basics          | ✅ Fertig     | 27.09.2026    |
+| 11    | Privacy & Product Metric Tracking | ⏳ Als Nächstes |               |
 
 ## Offene Punkte
 
@@ -26,6 +26,7 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 | --------------------------- | ----------- | ------------------------------------- | -------- |
 | Roadmap-Texte durchsehen    | Eugenia     | Vor dem Livegang                      | Ja       |
 | Vorlagen-Texte durchsehen   | Eugenia     | Vor dem Livegang                      | Ja       |
+| Deutschland-Grundlagen fachlich prüfen lassen | Eugenia | Vor dem Livegang        | Ja       |
 | Supabase-Cloud-Projekt anlegen | Eugenia  | Bevor die App online geht (Ende MVP)  | Ja       |
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
 | Impressum und Datenschutz fertigstellen | Eugenia | Bevor die App online geht | Ja |
@@ -46,6 +47,15 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 - [ ] Entscheiden, ob die Stufen 8 und 9 („Eine Liste mit 20 potenziellen Kunden anlegen“, „Die ersten 10 Kontakte anschreiben“) umformuliert werden sollen, siehe Phase 9, „Zu prüfen vor dem Livegang“.
 
 **Warum:** Die Texte sind ein Entwurf von Claude. Titel und Texte lassen sich jederzeit ändern; nur die IDs sollten gleich bleiben, weil Stufen darauf verweisen.
+
+### Deutschland-Grundlagen fachlich prüfen lassen
+
+- [ ] Die 9 Artikel in [content/legal-articles.ts](../content/legal-articles.ts) von einer Steuerberatung (Krankenversicherung und Rente ggf. zusätzlich von einer Versicherungsberatung) prüfen lassen.
+- [ ] Nach der Prüfung bei jedem Artikel `expertReviewed: true` setzen und `lastVerified` auf das Prüfdatum.
+
+**Warum:** Die Artikel sind ein Entwurf von Claude auf Basis offizieller Quellen, aber keine geprüfte Fachinformation. Die Regeln ändern sich laufend.
+
+**Absicherung:** Solange ein Artikel nicht als geprüft markiert ist, zeigt die Seite „Entwurf“ an, und ein Build für eine öffentliche Adresse bricht ab. Außerdem schlägt der Build fehl, sobald ein Artikel länger als 12 Monate nicht mehr geprüft wurde (`lastVerified`).
 
 ### Impressum und Datenschutz fertigstellen
 
@@ -519,3 +529,56 @@ Weiter mit **Phase 9: Templates** (Vorlagen).
 ### Nächster Schritt
 
 Weiter mit **Phase 10: German Freelancer Basics** (Deutschland-Grundlagen).
+
+---
+
+## Phase 10 – German Freelancer Basics
+
+**Status:** fertig am 27.09.2026.
+
+### Testergebnisse
+
+- 188 Unit-Tests sind grün (davon 4 neu, u. a. für die 12-Monats-Prüfung und die Verweise).
+- 24 Datenbanktests sind grün.
+- 114 End-to-End-Tests sind grün, auf Handy und Desktop (davon 8 neu).
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+- Livegang-Sperre geprüft: Ein simulierter Build für eine öffentliche Adresse bricht ab, weil die Artikel noch nicht fachlich geprüft sind.
+- Übersicht und Artikel auf 375 px Breite per Screenshot geprüft.
+
+### Entscheidungen (27.09.2026)
+
+- **Quellen:** nur offizielle (Gesetzestexte, Bundesministerien, ELSTER, Deutsche Rentenversicherung, GKV-Spitzenverband, Existenzgründungsportal des Bundes)
+- **Umfang:** kompakt, je ca. 300–500 Wörter mit „Kurz gesagt“, Erklärung und „Typische nächste Schritte“
+- **Prüfung:** Artikel sind als Entwurf markiert; der Livegang ist gesperrt, bis sie fachlich geprüft sind
+- **Verlinkung:** Artikel hängen an den passenden Stufen
+
+### Was jetzt steht
+
+- **9 Artikel** unter `/wissen/grundlagen` in drei Gruppen:
+  - Anmeldung und Status: Freiberufler oder Gewerbe, Anmeldung, Finanzamt (Fragebogen zur steuerlichen Erfassung), Scheinselbstständigkeit
+  - Steuern und Rechnungen: Kleinunternehmerregelung, Umsatzsteuer, Rechnungen und E-Rechnung
+  - Absicherung: Krankenversicherung, Altersvorsorge
+- **Jeder Artikel zeigt automatisch:** „Zuletzt geprüft am …“, den Hinweis „Keine Rechts- oder Steuerberatung“ (oben, vor dem Text), „Kurz gesagt“, die Quellen als Links und die passenden Stufen. Solange nicht fachlich geprüft, zusätzlich „Entwurf“.
+- **Verknüpfung:** Stufe 5 (Preise), 7 (Geschäftliche Grundlagen), 11 (Auftrag abschließen) und 13 (Rechnung stellen) zeigen „Hintergrundwissen“.
+- **Neue Felder:** `category` und `expertReviewed` an den Artikeln, `relatedArticleIds` an den Stufen (mit Prüfung der Verweise).
+- **Markdown:** Die Artikeltexte werden mit `react-markdown` dargestellt (neue Abhängigkeit). HTML im Text wird nicht ausgeführt.
+
+### Stand der Recherche (27.09.2026)
+
+Die wichtigsten Zahlen und Regeln, die in den Artikeln stehen:
+
+- Kleinunternehmer: Vorjahr höchstens 25.000 €, laufendes Jahr höchstens 100.000 €; **im Gründungsjahr 25.000 €** (BMF-Schreiben vom 18.03.2025); Verzicht bindet 5 Jahre
+- E-Rechnung: Empfang seit 2025 Pflicht; Papier/PDF noch bis Ende 2026, bei Vorjahresumsatz bis 800.000 € bis Ende 2027; Ausnahmen u. a. Kleinunternehmer, Rechnungen bis 250 €, Privatkunden (BMF-FAQ, Stand März 2026)
+- Krankenversicherung 2026: 14,6 % / 14,0 % + durchschnittlich 2,9 % Zusatzbeitrag, Pflege 3,6 % (+0,6 % kinderlos), Mindestbemessungsgrundlage 1.318,33 €
+- Altersvorsorge: Rentenversicherungspflicht u. a. bei im Wesentlichen einem Auftraggeber (§ 2 Nr. 9 SGB VI); geförderte private Vorsorge für Selbstständige ab 1.1.2027; die allgemeine Vorsorgepflicht ist bisher nur eine Empfehlung der Rentenkommission (Stand Juni 2026)
+- Gewerbesteuer-Freibetrag 24.500 €; Meldung beim Finanzamt innerhalb eines Monats (§ 138 AO)
+
+### Hinweise
+
+- **Zahlen veralten jährlich**, vor allem Krankenversicherung (jedes Jahr neu) und E-Rechnung (Fristen 2027/2028). Die Rentenkommission könnte zu einer neuen Pflicht führen.
+- **Umsatzsteuer-Voranmeldung:** Für Gründer gilt bis 2026 eine Sonderregel zur Häufigkeit. Der Artikel sagt deshalb bewusst nur „monatlich oder vierteljährlich, das Finanzamt teilt es mit“.
+- **Formulierung:** Alle Artikel erklären allgemein und geben „typische nächste Schritte“ statt Empfehlungen für den Einzelfall (Rechtsdienstleistungsgesetz).
+
+### Nächster Schritt
+
+Weiter mit **Phase 11: Privacy & Product Metric Tracking**.

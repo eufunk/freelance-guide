@@ -9,7 +9,7 @@ import { ProgressBar } from "@/components/roadmap/progress-bar";
 import { TaskCard } from "@/components/roadmap/task-card";
 import { templateKindLabels } from "@/components/templates/template-labels";
 import { buttonVariants } from "@/components/ui/button";
-import { getRoadmap, getStage, getTemplate, getTool } from "@/lib/content";
+import { getLegalArticle, getRoadmap, getStage, getTemplate, getTool } from "@/lib/content";
 import { getProgressByTask } from "@/lib/db/task-progress";
 import { stageProgress } from "@/lib/progress/roadmap-progress";
 
@@ -34,6 +34,9 @@ export default async function StagePage({ params }: PageProps<"/roadmap/[stageId
   const templates = stage.relatedTemplateIds
     .map((id) => getTemplate(id))
     .filter((template) => template !== undefined);
+  const articles = stage.relatedArticleIds
+    .map((id) => getLegalArticle(id))
+    .filter((article) => article !== undefined);
 
   return (
     <PageContainer className="max-w-3xl">
@@ -122,6 +125,24 @@ export default async function StagePage({ params }: PageProps<"/roadmap/[stageId
                 title={template.title}
                 description={template.description}
                 badge={templateKindLabels[template.kind]}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {articles.length > 0 && (
+        <section aria-labelledby="articles-heading" className="mt-10 space-y-3">
+          <h2 id="articles-heading" className="text-lg font-semibold">
+            Hintergrundwissen
+          </h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            {articles.map((article) => (
+              <InfoCard
+                key={article.id}
+                href={`/wissen/grundlagen/${article.id}`}
+                title={article.title}
+                description={article.category}
               />
             ))}
           </div>

@@ -144,6 +144,7 @@ export const roadmap = [
     whyItMatters:
       "Zu niedrige Preise sind der häufigste Fehler am Anfang. Dein Stundensatz muss Steuern, Versicherungen, Urlaub und Leerlaufzeiten mittragen.",
     relatedToolIds: ["hourly-rate", "project-price"],
+    relatedArticleIds: ["small-business-scheme", "vat"],
     tasks: [
       {
         id: "calculate-hourly-rate",
@@ -207,6 +208,14 @@ export const roadmap = [
       "Wer die Anmeldung und Absicherung von Anfang an richtig macht, vermeidet Nachzahlungen und Ärger mit Behörden.",
     relatedToolIds: ["readiness-checklist"],
     relatedTemplateIds: ["invoice-example"],
+    relatedArticleIds: [
+      "freelancer-or-trade",
+      "registration",
+      "tax-office",
+      "small-business-scheme",
+      "health-insurance",
+      "retirement",
+    ],
     tasks: [
       {
         id: "clarify-business-type",
@@ -344,6 +353,7 @@ export const roadmap = [
     shortExplanation: "Mach aus dem Angebot einen verbindlichen Auftrag.",
     whyItMatters:
       "Erst mit einer klaren Vereinbarung ist der Auftrag sicher. Sie schützt dich und deinen Kunden.",
+    relatedArticleIds: ["false-self-employment"],
     tasks: [
       {
         id: "handle-feedback",
@@ -411,6 +421,7 @@ export const roadmap = [
     whyItMatters:
       "Nur eine korrekte Rechnung wird bezahlt – und sie ist die Grundlage für deine Buchhaltung und Steuererklärung.",
     relatedTemplateIds: ["invoice-example"],
+    relatedArticleIds: ["invoices", "vat"],
     tasks: [
       {
         id: "create-invoice",
