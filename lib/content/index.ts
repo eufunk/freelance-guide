@@ -1,5 +1,6 @@
 import { legalArticles } from "@/content/legal-articles";
 import { onboardingRules } from "@/content/onboarding-rules";
+import { readinessChecklist } from "@/content/readiness-checklist";
 import { roadmap } from "@/content/roadmap";
 import { templates } from "@/content/templates";
 import { tools } from "@/content/tools";
@@ -7,7 +8,14 @@ import { tools } from "@/content/tools";
 import type { Stage, Task, Template, Tool, ToolId } from "./schema";
 import { loadContent } from "./validate";
 
-export const rawContent = { roadmap, tools, templates, legalArticles, onboardingRules };
+export const rawContent = {
+  roadmap,
+  tools,
+  templates,
+  legalArticles,
+  onboardingRules,
+  readinessChecklist,
+};
 
 // Parsed once when the module loads. Invalid content throws here, so every
 // page that uses content fails the build instead of showing broken data.
@@ -58,4 +66,8 @@ export function getLegalArticles() {
 
 export function getOnboardingRules() {
   return content.onboardingRules;
+}
+
+export function getReadinessChecklist() {
+  return content.readinessChecklist;
 }

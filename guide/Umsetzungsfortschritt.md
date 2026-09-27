@@ -13,8 +13,8 @@ Stand der Umsetzung der Phasen aus der [ToDo-Liste](ToDo.docx). Pro abgeschlosse
 | 5     | Onboarding                        | ✅ Fertig     | 26.09.2026    |
 | 6     | Roadmap & Task System             | ✅ Fertig     | 26.09.2026    |
 | 7     | Dashboard                         | ✅ Fertig     | 27.09.2026    |
-| 8     | Tools                             | ⏳ Als Nächstes |               |
-| 9     | Templates                         | Offen         |               |
+| 8     | Tools                             | ✅ Fertig     | 27.09.2026    |
+| 9     | Templates                         | ⏳ Als Nächstes |               |
 | 10    | German Freelancer Basics          | Offen         |               |
 | 11    | Privacy & Product Metric Tracking | Offen         |               |
 
@@ -29,7 +29,6 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 | Hosting festlegen           | Eugenia     | Bevor die App online geht (Ende MVP)  | Ja       |
 | Impressum und Datenschutz fertigstellen | Eugenia | Bevor die App online geht | Ja |
 | Projekt aus OneDrive lösen  | Eugenia     | Nur falls der Rechner langsam wird    | Nein     |
-| Seltener Serverfehler nach der Anmeldung | Claude | Sobald er erneut auftritt | Ja |
 
 ### Roadmap-Texte durchsehen
 
@@ -49,16 +48,6 @@ Diese Punkte gehören zu keiner bestimmten Phase.
 **Warum:** Ohne vollständiges Impressum und korrekte Datenschutzerklärung darf die App nicht öffentlich betrieben werden. Die Datenschutzerklärung ist ein Entwurf von Claude und keine Rechtsberatung.
 
 **Absicherung:** Ein automatischer Check bricht den Build ab, sobald die App für eine öffentliche Adresse gebaut wird und noch Platzhalter übrig sind oder die Datenschutzerklärung noch als Entwurf markiert ist.
-
-### Offener Fehler: seltener Serverfehler direkt nach der Anmeldung
-
-- [ ] Ursache finden, sobald der Fehler erneut auftritt.
-
-**Was passiert:** In zwei von rund 20 Gesamtläufen der End-to-End-Tests zeigte das Dashboard direkt nach der Bestätigung der E-Mail-Adresse die Fehlerseite „Etwas ist schiefgelaufen“ (Fehler-ID `2497239318@E394`). Laut dem Next.js-Code bedeutet `E394`, dass beim Rendern etwas geworfen wurde, das kein echtes Fehlerobjekt ist. Unsere Datenbankzugriffe werfen echte Fehlerobjekte; sie scheiden damit wahrscheinlich aus.
-
-**Bisherige Suche (27.09.2026):** 6 weitere Gesamtläufe und 48 gezielte Wiederholungen der betroffenen Tests – alle ohne Fehler. Die Server-Protokolle zeigten keine Auffälligkeit.
-
-**Vorkehrung:** Die Testläufe geben jetzt die komplette Server-Ausgabe mit aus, lokal und auf GitHub. Tritt der Fehler wieder auf, steht die eigentliche Meldung im Protokoll. Auf GitHub wiederholt Playwright fehlgeschlagene Tests bis zu zweimal und meldet sie dann als „flaky“, der Lauf bleibt aber grün.
 
 ### Supabase-Cloud-Projekt anlegen
 
@@ -122,7 +111,7 @@ Docker läuft stattdessen direkt im vorhandenen Ubuntu unter WSL, ohne Docker De
 
 Eingerichtet wurde:
 
-- **In Ubuntu:** Docker 29.1.3 und die Supabase-CLI 2.117.0. Vorher musste eine ältere, unterbrochene Paketinstallation in Ubuntu abgeschlossen werden (`dpkg --configure -a`).
+- **In Ubuntu:** Docker 29.1.3 und die Supabase-CLI (seit 27.09.2026 Version 2.118.0). Vorher musste eine ältere, unterbrochene Paketinstallation in Ubuntu abgeschlossen werden (`dpkg --configure -a`).
 - **Supabase lokal** mit Datenbank, Login, Admin-Oberfläche und Test-Postfach. Nicht benötigte Dienste (Datei-Speicher, Echtzeit, Serverfunktionen, Log-Analyse) sind abgeschaltet, um Arbeitsspeicher zu sparen.
 - **`.env.local`** mit den lokalen Zugangsdaten. Das sind feste Standardwerte jeder lokalen Supabase-Installation und keine Geheimnisse.
 - **Start und Stopp per npm-Befehl**, siehe unten. WSL fährt Ubuntu von selbst herunter, wenn gerade niemand damit arbeitet, und damit auch die Datenbank. `npm run db:start` hält Ubuntu deshalb wach, bis `npm run db:stop` aufgerufen wird.
@@ -421,3 +410,44 @@ Das Dashboard beantwortet die Frage „Was soll ich als Nächstes tun?“.
 ### Nächster Schritt
 
 Weiter mit **Phase 8: Tools** (Stundensatz-Rechner, Projektpreis-Rechner, Startklar-Check).
+
+---
+
+## Phase 8 – Tools
+
+**Status:** fertig am 27.09.2026, auf `main` gemergt.
+
+### Testergebnisse
+
+- 164 Unit-Tests sind grün (davon 27 neu).
+- 24 Datenbanktests sind grün.
+- 92 End-to-End-Tests sind grün, auf Handy und Desktop (davon 14 neu), in vier Läufen hintereinander.
+- Lint, Typecheck, Formatierung und Production-Build laufen ohne Fehler.
+
+### Was jetzt steht
+
+- **Stundensatz-Rechner** (`/tools/stundensatz`), ohne Konto nutzbar:
+  - Grundangaben: Wunsch-Nettoeinkommen, Betriebskosten, Arbeitszeit
+  - Aufklappbar: nicht abrechenbare Stunden, Urlaub, Feiertage, Krankheitstage, Kranken- und Pflegeversicherung, Altersvorsorge, Steuersatz
+  - Das Ergebnis erscheint sofort beim Tippen, mit Rechenweg (Arbeitstage, abrechenbare Stunden, nötiger Gewinn und Umsatz). Auf dem Handy steht es direkt unter den Grundangaben.
+  - Rechnet genau nach der Formel aus der ToDo-Liste. Beispiel: 3.000 € netto und 200 € Kosten ergeben mit den Standardannahmen 56,33 €, angezeigt als 57 € pro Stunde.
+  - Deutsche Zahlen wie „3.000“ oder „2,5“ werden verstanden.
+  - Hinweise: Schätzung, keine Steuerberatung; Umsatzsteuer kommt in der Regel dazu.
+  - Mit Konto lässt sich das Ergebnis speichern. Der Server rechnet dabei selbst nach, statt dem Wert aus dem Browser zu vertrauen.
+- **Projektpreis-Rechner** (`/tools/projektpreis`): Aufwand × Stundensatz + Puffer (Standard 20 %). Der Stundensatz wird aus dem Stundensatz-Rechner oder dem gespeicherten Ergebnis übernommen.
+- **Startklar-Check** (`/tools/startklar`): 8 Punkte aus der ToDo-Liste, abgeleitet aus dem Roadmap-Fortschritt, mit Prozentanzeige. Jeder Punkt führt zur passenden Stufe. Braucht ein Konto.
+- **Verlinkung:** Tools-Seite, Stufen-Seiten und Dashboard verlinken die Tools jetzt direkt.
+- **Neue Inhaltsdateien:** `content/calculator-defaults.ts` (Standardannahmen) und `content/readiness-checklist.ts` (Startklar-Punkte). Die Checkliste wird beim Build auf gültige Verweise geprüft.
+
+### Zu prüfen vor dem Livegang
+
+- **Standardannahmen im Rechner:** Kranken- und Pflegeversicherung (600 € / Monat) und Altersvorsorge (400 € / Monat) sind grobe Schätzwerte, der pauschale Steuersatz (30 %) ist eine Vereinfachung. Die ToDo-Liste nennt dafür keine Zahlen. Sie stehen in `content/calculator-defaults.ts` und sollten fachlich geprüft werden.
+
+### Gefundene und behobene Fehler
+
+- **Seltener Serverfehler nach der Anmeldung (aus Phase 7):** Dank der neuen Server-Protokollierung ist er beim ersten Wiederauftreten sichtbar geworden: `PGRST303: JWT issued at future`. Die Datenbank-Schnittstelle PostgREST hat ein gerade erst ausgestelltes Anmelde-Token abgelehnt. Das ist ein bekannter Fehler in PostgREST (Issue #5196), behoben in Version 16.3. Die Supabase-CLI wurde deshalb auf 2.118.0 aktualisiert, lokal in Ubuntu und auf GitHub; sie bringt PostgREST 16.3 mit. Danach trat der Fehler in vier Gesamtläufen nicht mehr auf.
+- **Nebenbei:** Die GitHub-Bausteine im Prüfablauf sind auf die aktuellen Versionen gehoben (`checkout` v7, `setup-node` v7, `setup-cli` v3). Damit ist die Warnung zu Node.js 20 erledigt.
+
+### Nächster Schritt
+
+Weiter mit **Phase 9: Templates** (Vorlagen).

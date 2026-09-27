@@ -16,3 +16,17 @@ export function formatDate(iso: string): string {
     timeZone: "Europe/Berlin",
   });
 }
+
+/** "57 €", "2.736 €" (whole euros). */
+export function formatEuro(amount: number): string {
+  return new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+/** "1.260" */
+export function formatNumber(value: number): string {
+  return Math.round(value).toLocaleString("de-DE");
+}

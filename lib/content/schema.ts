@@ -101,12 +101,27 @@ export const onboardingRulesSchema = z.strictObject({
   proposedDoneByFlag: z.record(z.enum(onboardingFlags), z.array(id)),
 });
 
+/** An item of the readiness checklist, done when all its stages and tasks are done. */
+export const readinessItemSchema = z
+  .strictObject({
+    id,
+    title: text,
+    description: text,
+    stageIds: z.array(id).default([]),
+    taskIds: z.array(id).default([]),
+  })
+  .refine((item) => item.stageIds.length + item.taskIds.length > 0, {
+    message: "A readiness item needs at least one stage or task",
+    path: ["stageIds"],
+  });
+
 // Input types: what authors write in content/ (defaults may be omitted).
 export type StageInput = z.input<typeof stageSchema>;
 export type ToolInput = z.input<typeof toolSchema>;
 export type TemplateInput = z.input<typeof templateSchema>;
 export type LegalArticleInput = z.input<typeof legalArticleSchema>;
 export type OnboardingRulesInput = z.input<typeof onboardingRulesSchema>;
+export type ReadinessItemInput = z.input<typeof readinessItemSchema>;
 
 // Parsed types.
 export type Resource = z.output<typeof resourceSchema>;
@@ -114,6 +129,7 @@ export type Tool = z.output<typeof toolSchema>;
 export type Template = z.output<typeof templateSchema>;
 export type LegalArticle = z.output<typeof legalArticleSchema>;
 export type OnboardingRules = z.output<typeof onboardingRulesSchema>;
+export type ReadinessItem = z.output<typeof readinessItemSchema>;
 type ParsedStage = z.output<typeof stageSchema>;
 type ParsedTask = z.output<typeof taskSchema>;
 

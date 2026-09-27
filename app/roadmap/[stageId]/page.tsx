@@ -93,13 +93,12 @@ export default async function StagePage({ params }: PageProps<"/roadmap/[stageId
             Passende Tools
           </h2>
           <div className="grid gap-3 md:grid-cols-2">
-            {/* The tools are built in Phase 8; until then they are listed without links. */}
             {tools.map((tool) => (
               <InfoCard
                 key={tool.id}
                 title={tool.title}
                 description={tool.description}
-                badge="Bald verfügbar"
+                href={tool.href}
               />
             ))}
           </div>

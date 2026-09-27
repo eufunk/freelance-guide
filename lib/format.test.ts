@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatDate, formatDuration } from "./format";
+import { formatDate, formatDuration, formatEuro, formatNumber } from "./format";
 
 describe("formatDuration", () => {
   it.each([
@@ -21,5 +21,20 @@ describe("formatDate", () => {
     expect(formatDate("2026-09-26T10:00:00Z")).toBe("26.09.2026");
     // 23:30 UTC is already the next day in Germany.
     expect(formatDate("2026-09-26T23:30:00Z")).toBe("27.09.2026");
+  });
+});
+
+describe("formatEuro", () => {
+  it("formats whole euros in German", () => {
+    // Intl uses a non-breaking space before the euro sign.
+    expect(formatEuro(2736).replace(/\s/g, " ")).toBe("2.736 €");
+    expect(formatEuro(56.6).replace(/\s/g, " ")).toBe("57 €");
+  });
+});
+
+describe("formatNumber", () => {
+  it("rounds and groups thousands", () => {
+    expect(formatNumber(1260)).toBe("1.260");
+    expect(formatNumber(68571.43)).toBe("68.571");
   });
 });

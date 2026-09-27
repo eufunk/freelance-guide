@@ -63,6 +63,10 @@ function validContent(): RawContent {
       },
       proposedDoneByFlag: { hasPortfolio: ["stage-two"], hasFreelanceExperience: [] },
     },
+    readinessChecklist: [
+      { id: "service", title: "Angebot", description: "Klar", stageIds: ["stage-one"] },
+      { id: "task", title: "Aufgabe", description: "Erledigt", taskIds: ["task-b"] },
+    ],
   };
 }
 
@@ -203,6 +207,30 @@ describe("loadContent", () => {
     (future.legalArticles as { lastVerified: string }[])[0]!.lastVerified = "2026-10-01";
     expect(problemsOf(future)).toEqual([
       'Legal article "kleinunternehmer" has lastVerified in the future (2026-10-01)',
+    ]);
+  });
+
+  it("rejects readiness items that refer to unknown stages or tasks", () => {
+    const raw = validContent();
+    (raw.readinessChecklist as { stageIds?: string[]; taskIds?: string[] }[])[0]!.stageIds = [
+      "stage-99",
+    ];
+    (raw.readinessChecklist as { stageIds?: string[]; taskIds?: string[] }[])[1]!.taskIds = [
+      "task-99",
+    ];
+
+    expect(problemsOf(raw)).toEqual([
+      'Readiness item "service" refers to unknown stage "stage-99"',
+      'Readiness item "task" refers to unknown task "task-99"',
+    ]);
+  });
+
+  it("requires a stage or task for each readiness item", () => {
+    const raw = validContent();
+    (raw.readinessChecklist as { stageIds?: string[] }[])[0]!.stageIds = [];
+
+    expect(problemsOf(raw)).toEqual([
+      "readinessChecklist.0.stageIds: A readiness item needs at least one stage or task",
     ]);
   });
 
