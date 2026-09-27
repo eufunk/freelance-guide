@@ -1,6 +1,6 @@
 # Projektstand und Übergabe
 
-**Stand:** 27.09.2026 · `main` bei `72b7c22` · GitHub-Prüfung grün
+**Stand:** 27.09.2026 · Phase 9 auf `main` gemergt · GitHub-Prüfung grün
 
 Diese Datei fasst alles zusammen, was man braucht, um in einem neuen Chat nahtlos weiterzuarbeiten. Einstieg für einen neuen Chat:
 
