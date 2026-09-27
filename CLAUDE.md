@@ -2,6 +2,8 @@
 
 # Project notes
 
+- **Start here:** `guide/Projektstand.md` (current state, local setup, workflow, next step). Keep it up to date after each phase.
+
 - Product spec and phase plan: `guide/ToDo.docx`. Follow its "Decisions" and "Development Rules".
 - The app is German only (UI and content). Code, comments and commit messages are in English.
 - Business logic goes into `lib/` as pure, unit-tested functions; content goes into `content/`.
