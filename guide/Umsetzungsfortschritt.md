@@ -448,6 +448,15 @@ Weiter mit **Phase 8: Tools** (Stundensatz-Rechner, Projektpreis-Rechner, Startk
 - **Seltener Serverfehler nach der Anmeldung (aus Phase 7):** Dank der neuen Server-Protokollierung ist er beim ersten Wiederauftreten sichtbar geworden: `PGRST303: JWT issued at future`. Die Datenbank-Schnittstelle PostgREST hat ein gerade erst ausgestelltes Anmelde-Token abgelehnt. Das ist ein bekannter Fehler in PostgREST (Issue #5196), behoben in Version 16.3. Die Supabase-CLI wurde deshalb auf 2.118.0 aktualisiert, lokal in Ubuntu und auf GitHub; sie bringt PostgREST 16.3 mit. Danach trat der Fehler in vier Gesamtläufen nicht mehr auf.
 - **Nebenbei:** Die GitHub-Bausteine im Prüfablauf sind auf die aktuellen Versionen gehoben (`checkout` v7, `setup-node` v7, `setup-cli` v3). Damit ist die Warnung zu Node.js 20 erledigt.
 
+### Nachtrag: Fehler auf GitHub nach dem Merge (27.09.2026)
+
+Nach dem Merge war die Prüfung auf GitHub rot: Zwei Tests des Stundensatz-Rechners scheiterten in der Handy-Ansicht beim Klicken. Die fest stehende Navigationsleiste unten bzw. die Kopfzeile oben lag über dem Button, weil Linux die Schriften etwas anders umbricht als Windows.
+
+- **Nachgestellt:** In Ubuntu (WSL) wurde eine Linux-Testumgebung wie auf GitHub aufgebaut. Dort scheiterten ohne Korrektur genau dieselben Tests mit denselben Meldungen.
+- **Korrektur:** Die Seite hält beim Scrollen jetzt Abstand zu Kopfzeile und Navigationsleiste (`scroll-padding`). Das hilft auch echten Nutzern: Mit der Tastatur angesprungene Elemente verschwinden nicht mehr unter den Leisten.
+- **Geprüft:** Alle 92 End-to-End-Tests laufen unter Linux und unter Windows.
+- **Für die Zukunft:** Schlägt ein Test auf GitHub fehl, werden die Playwright-Aufzeichnungen als Download am Lauf gespeichert (7 Tage).
+
 ### Nächster Schritt
 
 Weiter mit **Phase 9: Templates** (Vorlagen).
